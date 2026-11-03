@@ -22,12 +22,12 @@
 
 | Role | Name | Enrollment No. | GitHub Username |
 |------|------|----------------|-----------------|
-| Group Lead | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+| Group Lead |Toonu Raj Singh | 2501010479 | rajsingh-believer |
+| Member 2 | Om Prakash Sharma | 2501010314 | Omprakash-7 |
+| Member 3 | Pankaj Kumar | 2501010317 | pankaj-2115 |
+| Member 4 | Bharat Sharma | 2501010114 | bharatpamdit |
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** ____
+**Team No.:** T0004 · **Section:** D · **Repository URL:** https://github.com/Omprakash-7/DE_Project_2026
 
 ---
 
