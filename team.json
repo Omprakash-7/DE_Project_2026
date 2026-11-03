@@ -1,0 +1,32 @@
+{
+  "team_no": "T0004",
+  "section": "D",
+  "Mentor" : "Omkar",
+  "members": [
+    {
+      "role": "Group Lead",
+      "name": "Toonu Raj Singh",
+      "enrollment_no": "2501010479",
+      "github_username": "rajsingh-believer"
+    },
+    {
+      "role": "Member 2",
+      "name": "Om Prakash Sharma",
+      "enrollment_no": "2501010314",
+      "github_username": "Omprakash-7"
+    },
+    {
+      "role": "Member 3",
+      "name": "Pankaj Kumar",
+      "enrollment_no": "2501010317",
+      "github_username": "pankaj-2115"
+    },
+    {
+      "role": "Member 4",
+      "name": "Bharat Sharma",
+      "enrollment_no": "2501010114",
+      "github_username": "bharatpamdit"
+    }
+  ],
+  "repository_url": "https://github.com/Omprakash-7/DE_Project_2026"
+}
