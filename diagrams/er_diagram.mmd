@@ -1,0 +1,101 @@
+erDiagram
+    USERS ||--o{ DEVICES : "has linked (1:N)"
+    USERS ||--o{ CHATS : "creates (1:N)"
+    CHATS ||--|{ CHAT_MEMBERS : "contains (1:N)"
+    USERS ||--o{ CHAT_MEMBERS : "joins (1:N)"
+    CHATS ||--o{ MESSAGES : "contains (1:N)"
+    USERS ||--o{ MESSAGES : "sends (1:N)"
+    MESSAGES ||--o{ MESSAGES : "replies to (0..1:N)"
+    MEDIA ||--o| MESSAGES : "attached to (1:0..1)"
+    USERS ||--o{ MEDIA : "uploads (1:N)"
+    MESSAGES ||--o{ MESSAGE_RECEIPTS : "has receipts (1:N)"
+    USERS ||--o{ MESSAGE_RECEIPTS : "receives (1:N)"
+    CHATS ||--o{ CALLS : "hosted in (1:N)"
+    USERS ||--o{ CALLS : "places (1:N)"
+    USERS ||--o{ BLOCKED_USERS : "blocker (1:N)"
+    USERS ||--o{ BLOCKED_USERS : "blocked (1:N)"
+
+    USERS {
+        int user_id PK
+        varchar phone_e164 UK
+        varchar display_name
+        text about
+        boolean is_business
+        date joined_on
+        timestamptz last_seen_at
+        varchar status
+    }
+
+    DEVICES {
+        int device_id PK
+        int user_id FK
+        varchar device_type
+        varchar app_version
+        timestamptz registered_at
+        timestamptz last_active_at
+    }
+
+    CHATS {
+        int chat_id PK
+        varchar chat_type
+        varchar group_name
+        int created_by FK
+        timestamptz created_at
+    }
+
+    CHAT_MEMBERS {
+        int chat_id PK,FK
+        int user_id PK,FK
+        varchar role
+        timestamptz joined_at
+        timestamptz left_at
+        boolean is_muted
+    }
+
+    MEDIA {
+        int media_id PK
+        int uploader_id FK
+        varchar media_type
+        varchar mime_type
+        bigint size_bytes
+        char sha256
+        timestamptz uploaded_at
+    }
+
+    MESSAGES {
+        bigint message_id PK
+        int chat_id FK
+        int sender_id FK
+        timestamptz sent_at
+        varchar message_type
+        text body
+        int media_id FK
+        bigint reply_to_message_id FK
+        boolean is_forwarded
+        boolean is_deleted
+        timestamptz edited_at
+    }
+
+    MESSAGE_RECEIPTS {
+        bigint message_id PK,FK
+        int user_id PK,FK
+        timestamptz delivered_at
+        timestamptz read_at
+    }
+
+    CALLS {
+        int call_id PK
+        int chat_id FK
+        int caller_id FK
+        varchar call_type
+        timestamptz started_at
+        timestamptz answered_at
+        timestamptz ended_at
+        varchar status
+    }
+
+    BLOCKED_USERS {
+        int blocker_id PK,FK
+        int blocked_id PK,FK
+        timestamptz blocked_at
+    }
