@@ -221,6 +221,8 @@ ORDER BY messages DESC;
 
 -- @R22
 -- Trust & safety console: all messages, newest first, page 4,001 (25 per page) (REWRITTEN: keyset pagination)
+-- 20001 is the reproducible seed-workload cursor; production must bind the
+-- last message_id from the previous page instead of reusing this literal.
 SELECT message_id, chat_id, sender_id, message_type, sent_at
 FROM messages
 WHERE message_id < 20001
