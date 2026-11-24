@@ -60,7 +60,11 @@ for f in $(ls "$TMP"/*.sql | sort -V); do
     times+=("$t")
   done
   sorted=($(printf '%s\n' "${times[@]}" | sort -g))
-  median="${sorted[$((RUNS / 2))]}"
+  if (( RUNS % 2 )); then
+    median="${sorted[$((RUNS / 2))]}"
+  else
+    median="$(awk -v low="${sorted[$((RUNS / 2 - 1))]}" -v high="${sorted[$((RUNS / 2))]}" 'BEGIN { printf "%.3f", (low + high) / 2 }')"
+  fi
   avg="$(printf '%s\n' "${times[@]}" | awk '{ s += $1 } END { printf "%.3f", s / NR }')"
   # every scan node in the last run's plan, e.g. "Seq Scan on orders | Index Scan using customers_pkey on customers"
   node="$(echo "$plan" | grep -oE '(Parallel )?(Seq Scan|Index Scan|Index Only Scan|Bitmap Heap Scan|Bitmap Index Scan)( Backward)?( using [a-z0-9_]+)? on [a-z0-9_]+' | sed -E 's/Parallel //; s/ Backward//' | awk '!seen[$0]++' | paste -sd'|' - | sed 's/|/ | /g' || true)"
