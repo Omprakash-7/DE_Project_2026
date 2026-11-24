@@ -19,6 +19,12 @@ The partitioning script is a separate pruning demonstration; its rollout
 constraints and the required key changes are summarized in
 [`docs/14_individual_analysis_partitioning.md`](docs/14_individual_analysis_partitioning.md).
 
+To discuss an index trade-off, compare W04's 5,000-row receipt insert before
+and after adding the partial indexes in
+[`docs/13_individual_analysis_w04.md`](docs/13_individual_analysis_w04.md):
+the optimized read paths gain indexes, while each qualifying write pays to
+maintain them.
+
 ## Files in this folder
 
 | Path | What it is |
