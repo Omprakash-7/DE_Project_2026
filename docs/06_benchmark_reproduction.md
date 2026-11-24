@@ -4,6 +4,12 @@ This runbook records the commands and assumptions needed to reproduce the DE
 measurements. Use PostgreSQL 15 or newer and run commands from the repository
 root so the `\copy` paths in `sql/02_load_data.sql` resolve.
 
+The runner accepts only the output phases `baseline`, `optimized`, and `large`,
+and requires a positive integer run count. It writes the arithmetic mean and
+median to `summary.csv`; for an even run count, the median is the mean of the
+two middle observations. Each phase writes to its matching directory under
+`benchmarks/results/`.
+
 ## Seed benchmark and optimized workload
 
 1. Unzip the committed `seed_data.zip` into `seed_data/` (do not commit the CSVs).
