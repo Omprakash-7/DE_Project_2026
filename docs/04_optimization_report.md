@@ -1,7 +1,9 @@
 # Phase 4 Optimization Report: WhatsApp Messaging Database (CP3)
-**Team:** T0004 | **Section:** D | **Mentor:** Omkar  
-**Repository:** [DE_Project_2026](https://github.com/Omprakash-7/DE_Project_2026)  
-**Database:** PostgreSQL 18.4 (Postgres.app) | **Workload:** 5 consecutive runs per query (`sql/06_optimized_queries.sql`)  
+**Team:** T0004 | **Section:** D | **Mentor:** Omkar
+**Repository:** [DE_Project_2026](https://github.com/Omprakash-7/DE_Project_2026)
+**Database:** PostgreSQL 18.4 (Postgres.app) | **Workload:** baseline values are from the CP2 three-run benchmark; optimized values are averages of five runs (`sql/06_optimized_queries.sql`).
+
+> **Run-count note:** the baseline and optimized averages use different sample counts (3 vs. 5), because the CP2 baseline artifacts were retained and the CP3 workload was measured for five runs. Compare the reported averages as indicative timings; the run counts are not matched.
 
 ---
 
@@ -16,7 +18,7 @@
 
 ## 2. Optimization Summary Table (All 30 Queries)
 
-> Note: `Improvement % = (Before - After) / Before × 100`. Negative percentages on fast PK lookups or write queries reflect minor single-run cold-cache variance (5-run averages) and expected index-maintenance overhead.
+> Note: `Improvement % = (Before - After) / Before × 100`. Negative percentages on fast PK lookups or write queries reflect minor cold-cache variance and expected index-maintenance overhead. Baseline values use three runs; optimized values use five.
 
 | Query | Before (ms) | Problem Found in Baseline Plan | Optimization Applied | After (ms) | Improvement | Same Result? |
 |---|---:|---|---|---:|---:|:---:|
@@ -88,6 +90,8 @@ WHERE m.chat_id = 20501
 ---
 
 ## 4. Proof of Result Equivalence
+
+**Time-zone assumption for R10/R11/R20:** the seed timestamps carry `+05:30` offsets, while the baseline `sent_at::date` and `EXTRACT(YEAR FROM started_at)` depend on the PostgreSQL session time zone. The optimized R10/R11 bounds encode `+05:30`, and R20 groups by the explicit `Asia/Kolkata` wall-clock hour. Their equivalence to the baseline date/year buckets therefore assumes an `Asia/Kolkata` baseline session. The captured benchmark files do not record `SET TIME ZONE`, so future comparisons should set it explicitly; production queries should follow the product's documented time-zone contract.
 
 Every query whose SQL changed (and every unchanged read query) was verified against the baseline `queries/workload_30.sql` using bidirectional `EXCEPT ALL` multiset comparison inside `psql`:
 
@@ -213,7 +217,7 @@ Execution Time: 2.410 ms
 | **W05** (Leave group) | 0.142 | 0.224 | +0.082 | +57.7% | **Acceptable:** Updating `left_at` updates `idx_chat_members_user_chat`; `0.224 ms` is 22× under `5 ms` target. |
 
 ### 6.2 Index Storage (`pg_relation_size`)
-Total across all 9 base tables: **59 MB** (`61,440 kB`).  
+Total across all 9 base tables: **59 MB** (`61,440 kB`).
 Total PK/UNIQUE indexes (CP1): **24 MB** · Total new CP3 indexes (12 indexes): **28 MB** · Combined all indexes: **52 MB**.
 
 | Table | Table Size | Index Name | Kind | Index Size | % of Table |
