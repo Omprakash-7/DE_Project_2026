@@ -2,9 +2,9 @@
 # Runs every query in queries/workload_30.sql with EXPLAIN (ANALYZE, BUFFERS)
 # RUNS times (default 3), records the average and median execution time, and saves the raw plans.
 #
-# Usage:   ./benchmarks/run_benchmark.sh <database> <before|after> [runs] [workload.sql]
-# Example: ./benchmarks/run_benchmark.sh capstone before
-#          ./benchmarks/run_benchmark.sh capstone after 3 sql/06_optimized_queries.sql
+# Usage:   ./benchmarks/run_benchmark.sh <database> <baseline|optimized|large> [runs] [workload.sql]
+# Example: ./benchmarks/run_benchmark.sh capstone baseline
+#          ./benchmarks/run_benchmark.sh capstone optimized 5 sql/06_optimized_queries.sql
 #
 # Connection settings come from the usual libpq variables (PGHOST, PGPORT, PGUSER).
 # Queries are split on "-- @R1" / "-- @W1" marker lines; "-- @END" stops collection.
@@ -13,8 +13,12 @@
 set -euo pipefail
 
 DB="${1:?database name required}"
-PHASE="${2:?phase required: before | after}"
+PHASE="${2:?phase required: baseline | optimized | large}"
 RUNS="${3:-3}"
+case "$PHASE" in
+  baseline|optimized|large) ;;
+  *) echo "phase must be baseline, optimized, or large" >&2; exit 2 ;;
+esac
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKLOAD="${4:-$ROOT/queries/workload_30.sql}"
 OUT="$ROOT/benchmarks/results/$PHASE"
