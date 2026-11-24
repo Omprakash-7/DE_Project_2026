@@ -1,0 +1,120 @@
+=== R20 run 1 ===
+Finalize GroupAggregate  (cost=3963.56..3995.48 rows=144 width=45) (actual time=19.030..19.888 rows=144.00 loops=1)
+  Group Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+  Buffers: shared hit=1383
+  ->  Gather Merge  (cost=3963.56..3991.49 rows=245 width=45) (actual time=19.021..19.833 rows=288.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=1383
+        ->  Sort  (cost=2963.55..2963.91 rows=144 width=45) (actual time=17.980..17.983 rows=144.00 loops=2)
+              Sort Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+              Sort Method: quicksort  Memory: 30kB
+              Buffers: shared hit=1383
+              Worker 0:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=2956.23..2958.39 rows=144 width=45) (actual time=17.924..17.931 rows=144.00 loops=2)
+                    Group Key: EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text)), message_type
+                    Batches: 1  Memory Usage: 40kB
+                    Buffers: shared hit=1368
+                    Worker 0:  Batches: 1  Memory Usage: 40kB
+                    ->  Parallel Seq Scan on messages  (cost=0.00..2426.82 rows=70588 width=37) (actual time=0.013..12.590 rows=60000.00 loops=2)
+                          Buffers: shared hit=1368
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.374 ms
+Execution Time: 19.946 ms
+=== R20 run 2 ===
+Finalize GroupAggregate  (cost=3963.56..3995.48 rows=144 width=45) (actual time=19.635..20.445 rows=144.00 loops=1)
+  Group Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+  Buffers: shared hit=1383
+  ->  Gather Merge  (cost=3963.56..3991.49 rows=245 width=45) (actual time=19.627..20.416 rows=288.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=1383
+        ->  Sort  (cost=2963.55..2963.91 rows=144 width=45) (actual time=18.498..18.500 rows=144.00 loops=2)
+              Sort Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+              Sort Method: quicksort  Memory: 30kB
+              Buffers: shared hit=1383
+              Worker 0:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=2956.23..2958.39 rows=144 width=45) (actual time=18.447..18.452 rows=144.00 loops=2)
+                    Group Key: EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text)), message_type
+                    Batches: 1  Memory Usage: 40kB
+                    Buffers: shared hit=1368
+                    Worker 0:  Batches: 1  Memory Usage: 40kB
+                    ->  Parallel Seq Scan on messages  (cost=0.00..2426.82 rows=70588 width=37) (actual time=0.012..12.988 rows=60000.00 loops=2)
+                          Buffers: shared hit=1368
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.364 ms
+Execution Time: 20.514 ms
+=== R20 run 3 ===
+Finalize GroupAggregate  (cost=3963.56..3995.48 rows=144 width=45) (actual time=20.710..21.488 rows=144.00 loops=1)
+  Group Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+  Buffers: shared hit=1383
+  ->  Gather Merge  (cost=3963.56..3991.49 rows=245 width=45) (actual time=20.703..21.448 rows=288.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=1383
+        ->  Sort  (cost=2963.55..2963.91 rows=144 width=45) (actual time=19.675..19.678 rows=144.00 loops=2)
+              Sort Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+              Sort Method: quicksort  Memory: 30kB
+              Buffers: shared hit=1383
+              Worker 0:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=2956.23..2958.39 rows=144 width=45) (actual time=19.618..19.624 rows=144.00 loops=2)
+                    Group Key: EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text)), message_type
+                    Batches: 1  Memory Usage: 40kB
+                    Buffers: shared hit=1368
+                    Worker 0:  Batches: 1  Memory Usage: 40kB
+                    ->  Parallel Seq Scan on messages  (cost=0.00..2426.82 rows=70588 width=37) (actual time=0.010..13.839 rows=60000.00 loops=2)
+                          Buffers: shared hit=1368
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.318 ms
+Execution Time: 21.537 ms
+=== R20 run 4 ===
+Finalize GroupAggregate  (cost=3963.56..3995.48 rows=144 width=45) (actual time=20.331..21.275 rows=144.00 loops=1)
+  Group Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+  Buffers: shared hit=1383
+  ->  Gather Merge  (cost=3963.56..3991.49 rows=245 width=45) (actual time=20.323..21.233 rows=288.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=1383
+        ->  Sort  (cost=2963.55..2963.91 rows=144 width=45) (actual time=19.319..19.322 rows=144.00 loops=2)
+              Sort Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+              Sort Method: quicksort  Memory: 30kB
+              Buffers: shared hit=1383
+              Worker 0:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=2956.23..2958.39 rows=144 width=45) (actual time=19.262..19.269 rows=144.00 loops=2)
+                    Group Key: EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text)), message_type
+                    Batches: 1  Memory Usage: 40kB
+                    Buffers: shared hit=1368
+                    Worker 0:  Batches: 1  Memory Usage: 40kB
+                    ->  Parallel Seq Scan on messages  (cost=0.00..2426.82 rows=70588 width=37) (actual time=0.011..13.620 rows=60000.00 loops=2)
+                          Buffers: shared hit=1368
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.355 ms
+Execution Time: 21.327 ms
+=== R20 run 5 ===
+Finalize GroupAggregate  (cost=3963.56..3995.48 rows=144 width=45) (actual time=19.707..20.521 rows=144.00 loops=1)
+  Group Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+  Buffers: shared hit=1383
+  ->  Gather Merge  (cost=3963.56..3991.49 rows=245 width=45) (actual time=19.699..20.479 rows=288.00 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=1383
+        ->  Sort  (cost=2963.55..2963.91 rows=144 width=45) (actual time=18.682..18.686 rows=144.00 loops=2)
+              Sort Key: (EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text))), message_type
+              Sort Method: quicksort  Memory: 30kB
+              Buffers: shared hit=1383
+              Worker 0:  Sort Method: quicksort  Memory: 30kB
+              ->  Partial HashAggregate  (cost=2956.23..2958.39 rows=144 width=45) (actual time=18.628..18.634 rows=144.00 loops=2)
+                    Group Key: EXTRACT(hour FROM (sent_at AT TIME ZONE 'Asia/Kolkata'::text)), message_type
+                    Batches: 1  Memory Usage: 40kB
+                    Buffers: shared hit=1368
+                    Worker 0:  Batches: 1  Memory Usage: 40kB
+                    ->  Parallel Seq Scan on messages  (cost=0.00..2426.82 rows=70588 width=37) (actual time=0.010..13.183 rows=60000.00 loops=2)
+                          Buffers: shared hit=1368
+Planning:
+  Buffers: shared hit=240
+Planning Time: 0.323 ms
+Execution Time: 20.579 ms

@@ -1,0 +1,170 @@
+=== R18 run 1 ===
+Sort  (cost=2848.13..2855.40 rows=2907 width=24) (actual time=11.945..12.061 rows=6097.00 loops=1)
+  Sort Key: u.last_seen_at
+  Sort Method: quicksort  Memory: 447kB
+  Buffers: shared hit=836
+  ->  Hash Right Semi Join  (cost=507.22..2680.90 rows=2907 width=24) (actual time=3.198..11.385 rows=6097.00 loops=1)
+        Hash Cond: (cm.user_id = u.user_id)
+        Buffers: shared hit=833
+        ->  Hash Join  (cost=154.78..2233.90 rows=12817 width=4) (actual time=2.578..8.045 rows=58213.00 loops=1)
+              Hash Cond: (cm.chat_id = c.chat_id)
+              Buffers: shared hit=794
+              ->  Seq Scan on chat_members cm  (cost=0.00..1821.14 rows=98261 width=8) (actual time=0.003..3.686 rows=98213.00 loops=1)
+                    Filter: (left_at IS NULL)
+                    Rows Removed by Filter: 6301
+                    Buffers: shared hit=776
+              ->  Hash  (cost=117.28..117.28 rows=3000 width=4) (actual time=0.205..0.205 rows=3000.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 138kB
+                    Buffers: shared hit=18
+                    ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=4) (actual time=0.005..0.110 rows=3000.00 loops=1)
+                          Heap Fetches: 0
+                          Index Searches: 1
+                          Buffers: shared hit=18
+        ->  Hash  (cost=267.38..267.38 rows=6805 width=24) (actual time=0.611..0.611 rows=6794.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 455kB
+              Buffers: shared hit=39
+              ->  Index Only Scan using idx_users_last_seen on users u  (cost=0.29..267.38 rows=6805 width=24) (actual time=0.007..0.292 rows=6794.00 loops=1)
+                    Index Cond: (last_seen_at < '2026-04-01 00:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=39
+Planning:
+  Buffers: shared hit=348
+Planning Time: 0.570 ms
+Execution Time: 12.183 ms
+=== R18 run 2 ===
+Sort  (cost=2848.13..2855.40 rows=2907 width=24) (actual time=12.077..12.194 rows=6097.00 loops=1)
+  Sort Key: u.last_seen_at
+  Sort Method: quicksort  Memory: 447kB
+  Buffers: shared hit=836
+  ->  Hash Right Semi Join  (cost=507.22..2680.90 rows=2907 width=24) (actual time=3.240..11.505 rows=6097.00 loops=1)
+        Hash Cond: (cm.user_id = u.user_id)
+        Buffers: shared hit=833
+        ->  Hash Join  (cost=154.78..2233.90 rows=12817 width=4) (actual time=2.589..7.976 rows=58213.00 loops=1)
+              Hash Cond: (cm.chat_id = c.chat_id)
+              Buffers: shared hit=794
+              ->  Seq Scan on chat_members cm  (cost=0.00..1821.14 rows=98261 width=8) (actual time=0.003..3.664 rows=98213.00 loops=1)
+                    Filter: (left_at IS NULL)
+                    Rows Removed by Filter: 6301
+                    Buffers: shared hit=776
+              ->  Hash  (cost=117.28..117.28 rows=3000 width=4) (actual time=0.206..0.206 rows=3000.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 138kB
+                    Buffers: shared hit=18
+                    ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=4) (actual time=0.005..0.111 rows=3000.00 loops=1)
+                          Heap Fetches: 0
+                          Index Searches: 1
+                          Buffers: shared hit=18
+        ->  Hash  (cost=267.38..267.38 rows=6805 width=24) (actual time=0.642..0.642 rows=6794.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 455kB
+              Buffers: shared hit=39
+              ->  Index Only Scan using idx_users_last_seen on users u  (cost=0.29..267.38 rows=6805 width=24) (actual time=0.014..0.305 rows=6794.00 loops=1)
+                    Index Cond: (last_seen_at < '2026-04-01 00:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=39
+Planning:
+  Buffers: shared hit=348
+Planning Time: 0.561 ms
+Execution Time: 12.317 ms
+=== R18 run 3 ===
+Sort  (cost=2848.13..2855.40 rows=2907 width=24) (actual time=11.870..12.013 rows=6097.00 loops=1)
+  Sort Key: u.last_seen_at
+  Sort Method: quicksort  Memory: 447kB
+  Buffers: shared hit=836
+  ->  Hash Right Semi Join  (cost=507.22..2680.90 rows=2907 width=24) (actual time=3.275..11.287 rows=6097.00 loops=1)
+        Hash Cond: (cm.user_id = u.user_id)
+        Buffers: shared hit=833
+        ->  Hash Join  (cost=154.78..2233.90 rows=12817 width=4) (actual time=2.650..7.995 rows=58213.00 loops=1)
+              Hash Cond: (cm.chat_id = c.chat_id)
+              Buffers: shared hit=794
+              ->  Seq Scan on chat_members cm  (cost=0.00..1821.14 rows=98261 width=8) (actual time=0.003..3.680 rows=98213.00 loops=1)
+                    Filter: (left_at IS NULL)
+                    Rows Removed by Filter: 6301
+                    Buffers: shared hit=776
+              ->  Hash  (cost=117.28..117.28 rows=3000 width=4) (actual time=0.212..0.212 rows=3000.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 138kB
+                    Buffers: shared hit=18
+                    ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=4) (actual time=0.005..0.119 rows=3000.00 loops=1)
+                          Heap Fetches: 0
+                          Index Searches: 1
+                          Buffers: shared hit=18
+        ->  Hash  (cost=267.38..267.38 rows=6805 width=24) (actual time=0.615..0.615 rows=6794.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 455kB
+              Buffers: shared hit=39
+              ->  Index Only Scan using idx_users_last_seen on users u  (cost=0.29..267.38 rows=6805 width=24) (actual time=0.007..0.291 rows=6794.00 loops=1)
+                    Index Cond: (last_seen_at < '2026-04-01 00:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=39
+Planning:
+  Buffers: shared hit=348
+Planning Time: 0.546 ms
+Execution Time: 12.151 ms
+=== R18 run 4 ===
+Sort  (cost=2848.13..2855.40 rows=2907 width=24) (actual time=11.922..12.055 rows=6097.00 loops=1)
+  Sort Key: u.last_seen_at
+  Sort Method: quicksort  Memory: 447kB
+  Buffers: shared hit=836
+  ->  Hash Right Semi Join  (cost=507.22..2680.90 rows=2907 width=24) (actual time=3.324..11.329 rows=6097.00 loops=1)
+        Hash Cond: (cm.user_id = u.user_id)
+        Buffers: shared hit=833
+        ->  Hash Join  (cost=154.78..2233.90 rows=12817 width=4) (actual time=2.602..7.921 rows=58213.00 loops=1)
+              Hash Cond: (cm.chat_id = c.chat_id)
+              Buffers: shared hit=794
+              ->  Seq Scan on chat_members cm  (cost=0.00..1821.14 rows=98261 width=8) (actual time=0.003..3.633 rows=98213.00 loops=1)
+                    Filter: (left_at IS NULL)
+                    Rows Removed by Filter: 6301
+                    Buffers: shared hit=776
+              ->  Hash  (cost=117.28..117.28 rows=3000 width=4) (actual time=0.212..0.212 rows=3000.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 138kB
+                    Buffers: shared hit=18
+                    ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=4) (actual time=0.006..0.115 rows=3000.00 loops=1)
+                          Heap Fetches: 0
+                          Index Searches: 1
+                          Buffers: shared hit=18
+        ->  Hash  (cost=267.38..267.38 rows=6805 width=24) (actual time=0.712..0.712 rows=6794.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 455kB
+              Buffers: shared hit=39
+              ->  Index Only Scan using idx_users_last_seen on users u  (cost=0.29..267.38 rows=6805 width=24) (actual time=0.008..0.344 rows=6794.00 loops=1)
+                    Index Cond: (last_seen_at < '2026-04-01 00:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=39
+Planning:
+  Buffers: shared hit=348
+Planning Time: 0.577 ms
+Execution Time: 12.184 ms
+=== R18 run 5 ===
+Sort  (cost=2848.13..2855.40 rows=2907 width=24) (actual time=12.219..12.347 rows=6097.00 loops=1)
+  Sort Key: u.last_seen_at
+  Sort Method: quicksort  Memory: 447kB
+  Buffers: shared hit=836
+  ->  Hash Right Semi Join  (cost=507.22..2680.90 rows=2907 width=24) (actual time=3.374..11.662 rows=6097.00 loops=1)
+        Hash Cond: (cm.user_id = u.user_id)
+        Buffers: shared hit=833
+        ->  Hash Join  (cost=154.78..2233.90 rows=12817 width=4) (actual time=2.720..8.195 rows=58213.00 loops=1)
+              Hash Cond: (cm.chat_id = c.chat_id)
+              Buffers: shared hit=794
+              ->  Seq Scan on chat_members cm  (cost=0.00..1821.14 rows=98261 width=8) (actual time=0.003..3.772 rows=98213.00 loops=1)
+                    Filter: (left_at IS NULL)
+                    Rows Removed by Filter: 6301
+                    Buffers: shared hit=776
+              ->  Hash  (cost=117.28..117.28 rows=3000 width=4) (actual time=0.203..0.203 rows=3000.00 loops=1)
+                    Buckets: 4096  Batches: 1  Memory Usage: 138kB
+                    Buffers: shared hit=18
+                    ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=4) (actual time=0.005..0.111 rows=3000.00 loops=1)
+                          Heap Fetches: 0
+                          Index Searches: 1
+                          Buffers: shared hit=18
+        ->  Hash  (cost=267.38..267.38 rows=6805 width=24) (actual time=0.645..0.645 rows=6794.00 loops=1)
+              Buckets: 8192  Batches: 1  Memory Usage: 455kB
+              Buffers: shared hit=39
+              ->  Index Only Scan using idx_users_last_seen on users u  (cost=0.29..267.38 rows=6805 width=24) (actual time=0.008..0.309 rows=6794.00 loops=1)
+                    Index Cond: (last_seen_at < '2026-04-01 00:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=39
+Planning:
+  Buffers: shared hit=348
+Planning Time: 0.555 ms
+Execution Time: 12.469 ms

@@ -1,0 +1,296 @@
+-- =====================================================================
+-- WhatsApp DBMS Project: Phase 4 Optimized Queries (CP3)
+-- Team: T0004 | Section: D | Mentor: Omkar
+--
+-- REWRITES SUMMARY (only modified queries listed; all others unchanged):
+--  * R08: Materialized pending CTE starts from 1% partial index
+--         idx_receipts_undelivered (5,076 rows) instead of scanning
+--         18k+ messages chronologically.
+--  * R10: Sargable timestamp range instead of sent_at::date cast.
+--  * R11: Sargable timestamp filter instead of EXTRACT(YEAR FROM started_at).
+--  * R13: Fixed SQL 3-valued logic NULL bug (NOT IN -> NOT EXISTS anti-join).
+--  * R19: Replaced two correlated scalar subqueries (6,000 table scans)
+--         with a single LEFT JOIN aggregation over messages.
+--  * R20: Explicit timezone AT TIME ZONE 'Asia/Kolkata' enables the
+--         immutable expression index idx_messages_hour_type stats.
+--  * R22: Keyset pagination (WHERE message_id < 20001) instead of
+--         OFFSET 100000 (cursor = last message_id of page 4,000).
+-- =====================================================================
+SET search_path TO whatsapp;
+BEGIN;
+
+-- @R01
+-- Chats screen: user 965's chats with the time and text of the latest message, newest first
+SELECT cm.chat_id, c.chat_type, c.group_name, last_msg.sent_at, last_msg.body
+FROM chat_members cm
+JOIN chats c ON c.chat_id = cm.chat_id
+CROSS JOIN LATERAL (
+    SELECT m.sent_at, m.body FROM messages m
+    WHERE m.chat_id = cm.chat_id
+    ORDER BY m.sent_at DESC
+    LIMIT 1
+) last_msg
+WHERE cm.user_id = 965 AND cm.left_at IS NULL
+ORDER BY last_msg.sent_at DESC;
+
+-- @R02
+-- Open a chat: the latest 50 messages of group 22556
+SELECT message_id, sender_id, sent_at, message_type, body, reply_to_message_id
+FROM messages
+WHERE chat_id = 22556
+ORDER BY sent_at DESC
+LIMIT 50;
+
+-- @R03
+-- Badge counts: unread messages per chat for user 965
+SELECT m.chat_id, count(*) AS unread
+FROM message_receipts r
+JOIN messages m ON m.message_id = r.message_id
+WHERE r.user_id = 965 AND r.read_at IS NULL
+GROUP BY m.chat_id
+ORDER BY unread DESC;
+
+-- @R04
+-- Search: messages containing "meeting" in any chat user 965 belongs to
+SELECT m.chat_id, m.message_id, m.sent_at, m.body
+FROM messages m
+JOIN chat_members cm ON cm.chat_id = m.chat_id AND cm.user_id = 965
+WHERE m.body ILIKE '%meeting%'
+ORDER BY m.sent_at DESC
+LIMIT 20;
+
+-- @R05
+-- Registration: is this phone number already on WhatsApp?
+SELECT user_id, display_name, status
+FROM users
+WHERE phone_e164 = '+919000000965';
+
+-- @R06
+-- Contact info: "last seen" of everyone user 965 chats with directly
+SELECT u.user_id, u.display_name, u.last_seen_at
+FROM chat_members me
+JOIN chats c         ON c.chat_id = me.chat_id AND c.chat_type = 'DIRECT'
+JOIN chat_members other ON other.chat_id = me.chat_id AND other.user_id <> me.user_id
+JOIN users u         ON u.user_id = other.user_id
+WHERE me.user_id = 965
+ORDER BY u.last_seen_at DESC NULLS LAST;
+
+-- @R07
+-- Group info screen: current members of group 22556 with their role
+SELECT cm.user_id, u.display_name, cm.role, cm.joined_at
+FROM chat_members cm
+JOIN users u ON u.user_id = cm.user_id
+WHERE cm.chat_id = 22556 AND cm.left_at IS NULL
+ORDER BY cm.role, u.display_name;
+
+-- @R08
+-- Delivery service: receipts still not delivered for messages sent before 23:00 on 30 Jun 2026 (REWRITTEN: drive from 1% partial index)
+WITH pending AS MATERIALIZED (
+    SELECT message_id, user_id
+    FROM message_receipts
+    WHERE delivered_at IS NULL
+)
+SELECT r.message_id, r.user_id, m.sent_at
+FROM pending r
+JOIN messages m ON m.message_id = r.message_id
+WHERE m.sent_at < '2026-06-30 23:00:00+05:30'
+ORDER BY m.sent_at
+LIMIT 500;
+
+-- @R09
+-- Storage team: top 20 users by total media uploaded (GB)
+SELECT uploader_id, count(*) AS files, round(sum(size_bytes) / 1024.0 / 1024 / 1024, 3) AS gb
+FROM media
+GROUP BY uploader_id
+ORDER BY sum(size_bytes) DESC
+LIMIT 20;
+
+-- @R10
+-- Growth: daily active senders in June 2026 (REWRITTEN: sargable range)
+SELECT sent_at::date AS day, count(DISTINCT sender_id) AS active_senders, count(*) AS messages
+FROM messages
+WHERE sent_at >= TIMESTAMPTZ '2026-06-01 00:00:00+05:30'
+  AND sent_at <  TIMESTAMPTZ '2026-07-01 00:00:00+05:30'
+GROUP BY 1
+ORDER BY 1;
+
+-- @R11
+-- Calls tab: missed calls received by user 965 since 1 Jan 2025 (REWRITTEN: sargable range)
+SELECT c.call_id, c.caller_id, c.call_type, c.started_at
+FROM calls c
+JOIN chat_members cm ON cm.chat_id = c.chat_id AND cm.user_id = 965
+WHERE c.status = 'MISSED'
+  AND c.caller_id <> 965
+  AND c.started_at >= TIMESTAMPTZ '2025-01-01 00:00:00+05:30'
+ORDER BY c.started_at DESC;
+
+-- @R12
+-- Spam detection: users who forwarded 2+ messages on the same day
+SELECT sender_id, sent_at::date AS day, count(*) AS forwarded
+FROM messages
+WHERE is_forwarded
+GROUP BY sender_id, sent_at::date
+HAVING count(*) >= 2
+ORDER BY forwarded DESC, sender_id;
+
+-- @R13
+-- Group admins: questions asked in group 20501 that nobody has replied to (FIXED: NOT IN NULL trap -> NOT EXISTS)
+SELECT m.message_id, m.sender_id, m.sent_at, m.body
+FROM messages m
+WHERE m.chat_id = 20501
+  AND m.body LIKE '%?%'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM messages r
+      WHERE r.reply_to_message_id = m.message_id
+  );
+
+-- @R14
+-- Engagement: 10 groups with the most distinct senders in June 2026
+SELECT m.chat_id, c.group_name, count(DISTINCT m.sender_id) AS active_members, count(*) AS messages
+FROM messages m
+JOIN chats c ON c.chat_id = m.chat_id AND c.chat_type = 'GROUP'
+WHERE m.sent_at >= '2026-06-01' AND m.sent_at < '2026-07-01'
+GROUP BY m.chat_id, c.group_name
+ORDER BY active_members DESC, messages DESC
+LIMIT 10;
+
+-- @R15
+-- Before delivering: has user 3064 blocked user 17793?
+SELECT EXISTS (SELECT 1 FROM blocked_users WHERE blocker_id = 3064 AND blocked_id = 17793) AS is_blocked;
+
+-- @R16
+-- Message info screen: who has read message 119989 and when
+SELECT r.user_id, u.display_name, r.delivered_at, r.read_at
+FROM message_receipts r
+JOIN users u ON u.user_id = r.user_id
+WHERE r.message_id = 119989
+ORDER BY r.read_at NULLS LAST;
+
+-- @R17
+-- Product analytics: average minutes from sending to reading, per message type (June 2026)
+SELECT m.message_type,
+       round(avg(EXTRACT(EPOCH FROM (r.read_at - m.sent_at)) / 60), 1) AS avg_minutes_to_read,
+       count(*) AS reads
+FROM message_receipts r
+JOIN messages m ON m.message_id = r.message_id
+WHERE r.read_at IS NOT NULL
+  AND m.sent_at >= '2026-06-01' AND m.sent_at < '2026-07-01'
+GROUP BY m.message_type
+ORDER BY avg_minutes_to_read;
+
+-- @R18
+-- Clean-up: users not seen since April 2026 who are still in at least one group
+SELECT u.user_id, u.display_name, u.last_seen_at
+FROM users u
+WHERE u.last_seen_at < '2026-04-01'
+  AND EXISTS (SELECT 1 FROM chat_members cm JOIN chats c ON c.chat_id = cm.chat_id
+              WHERE cm.user_id = u.user_id AND c.chat_type = 'GROUP' AND cm.left_at IS NULL)
+ORDER BY u.last_seen_at;
+
+-- @R19
+-- Group health report: for every group, the last message time and messages in June 2026 (REWRITTEN: single pass LEFT JOIN)
+SELECT c.chat_id,
+       c.group_name,
+       agg.last_message_at,
+       COALESCE(agg.june_messages, 0) AS june_messages
+FROM chats c
+LEFT JOIN (
+    SELECT m.chat_id,
+           max(m.sent_at) AS last_message_at,
+           count(*) FILTER (WHERE m.sent_at >= TIMESTAMPTZ '2026-06-01 00:00:00+05:30') AS june_messages
+    FROM messages m
+    GROUP BY m.chat_id
+) agg ON agg.chat_id = c.chat_id
+WHERE c.chat_type = 'GROUP'
+ORDER BY agg.last_message_at DESC NULLS LAST;
+
+-- @R20
+-- Capacity planning: messages per hour of the day, by message type (REWRITTEN: immutable TZ expression)
+SELECT EXTRACT(HOUR FROM sent_at AT TIME ZONE 'Asia/Kolkata') AS hour, message_type, count(*) AS messages
+FROM messages
+GROUP BY 1, 2
+ORDER BY 1, 2;
+
+-- @R21
+-- Product analytics: share of messages edited or deleted, per message type
+SELECT message_type,
+       count(*) AS messages,
+       round(100.0 * count(*) FILTER (WHERE edited_at IS NOT NULL) / count(*), 2) AS edited_pct,
+       round(100.0 * count(*) FILTER (WHERE is_deleted) / count(*), 2) AS deleted_pct
+FROM messages
+GROUP BY message_type
+ORDER BY messages DESC;
+
+-- @R22
+-- Trust & safety console: all messages, newest first, page 4,001 (25 per page) (REWRITTEN: keyset pagination)
+SELECT message_id, chat_id, sender_id, message_type, sent_at
+FROM messages
+WHERE message_id < 20001
+ORDER BY message_id DESC
+LIMIT 25;
+
+-- @R23
+-- Security: linked WEB/DESKTOP devices unused since 1 June 2026 (to auto log out)
+SELECT d.device_id, d.user_id, d.device_type, d.last_active_at
+FROM devices d
+WHERE d.device_type IN ('WEB', 'DESKTOP')
+  AND d.last_active_at < '2026-06-01'
+ORDER BY d.last_active_at;
+
+-- @R24
+-- Storage dedup: media files uploaded more than once (same SHA-256)
+SELECT sha256, count(*) AS copies, sum(size_bytes) AS total_bytes
+FROM media
+GROUP BY sha256
+HAVING count(*) > 1
+ORDER BY copies DESC;
+
+-- @R25
+-- Reply thread: walk up the chain of replies starting at message 119989
+WITH RECURSIVE thread AS (
+    SELECT message_id, reply_to_message_id, sender_id, body, 0 AS depth
+    FROM messages WHERE message_id = 119989
+    UNION ALL
+    SELECT m.message_id, m.reply_to_message_id, m.sender_id, m.body, t.depth + 1
+    FROM messages m JOIN thread t ON m.message_id = t.reply_to_message_id
+)
+SELECT * FROM thread ORDER BY depth DESC;
+
+-- @W01
+-- Send a text message in group 22556
+INSERT INTO messages (message_id, chat_id, sender_id, sent_at, message_type, body)
+VALUES (90000001, 22556, 965, '2026-07-01 09:00:00+05:30', 'TEXT', 'Good morning everyone');
+
+-- @W02
+-- Open chat: mark all of user 965's unread messages in group 22556 as read
+UPDATE message_receipts r
+SET read_at = TIMESTAMPTZ '2026-07-01 09:05:00+05:30',
+    delivered_at = coalesce(r.delivered_at, TIMESTAMPTZ '2026-07-01 09:05:00+05:30')
+FROM messages m
+WHERE m.message_id = r.message_id
+  AND m.chat_id = 22556
+  AND r.user_id = 965
+  AND r.read_at IS NULL;
+
+-- @W03
+-- "Delete for everyone" on message 119989
+UPDATE messages
+SET is_deleted = TRUE, body = NULL, media_id = NULL
+WHERE message_id = 119989;
+
+-- @W04
+-- Broadcast: create delivery receipts for 5,000 recipients of a business announcement
+INSERT INTO message_receipts (message_id, user_id)
+SELECT 1, g
+FROM generate_series(2, 5001) AS g
+ON CONFLICT (message_id, user_id) DO NOTHING;
+
+-- @W05
+-- User 965 leaves group 20898
+UPDATE chat_members
+SET left_at = TIMESTAMPTZ '2026-07-01 10:00:00+05:30'
+WHERE chat_id = 20898 AND user_id = 965 AND left_at IS NULL;
+
+-- @END
+ROLLBACK;

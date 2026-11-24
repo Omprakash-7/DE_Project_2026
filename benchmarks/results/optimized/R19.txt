@@ -1,0 +1,125 @@
+=== R19 run 1 ===
+Sort  (cost=4419.50..4427.00 rows=3000 width=36) (actual time=13.922..13.972 rows=3000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 262kB
+  Buffers: shared hit=1389
+  ->  Hash Right Join  (cost=3922.78..4246.24 rows=3000 width=36) (actual time=11.952..13.648 rows=3000.00 loops=1)
+        Hash Cond: (m.chat_id = c.chat_id)
+        Buffers: shared hit=1386
+        ->  HashAggregate  (cost=3768.00..3910.96 rows=14296 width=20) (actual time=11.672..12.494 rows=21164.00 loops=1)
+              Group Key: m.chat_id
+              Batches: 1  Memory Usage: 1817kB
+              Buffers: shared hit=1368
+              ->  Seq Scan on messages m  (cost=0.00..2568.00 rows=120000 width=12) (actual time=0.004..2.931 rows=120000.00 loops=1)
+                    Buffers: shared hit=1368
+        ->  Hash  (cost=117.28..117.28 rows=3000 width=20) (actual time=0.275..0.275 rows=3000.00 loops=1)
+              Buckets: 4096  Batches: 1  Memory Usage: 187kB
+              Buffers: shared hit=18
+              ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=20) (actual time=0.027..0.136 rows=3000.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=18
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.451 ms
+Execution Time: 14.066 ms
+=== R19 run 2 ===
+Sort  (cost=4419.50..4427.00 rows=3000 width=36) (actual time=13.710..13.760 rows=3000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 262kB
+  Buffers: shared hit=1389
+  ->  Hash Right Join  (cost=3922.78..4246.24 rows=3000 width=36) (actual time=11.718..13.427 rows=3000.00 loops=1)
+        Hash Cond: (m.chat_id = c.chat_id)
+        Buffers: shared hit=1386
+        ->  HashAggregate  (cost=3768.00..3910.96 rows=14296 width=20) (actual time=11.457..12.278 rows=21164.00 loops=1)
+              Group Key: m.chat_id
+              Batches: 1  Memory Usage: 1817kB
+              Buffers: shared hit=1368
+              ->  Seq Scan on messages m  (cost=0.00..2568.00 rows=120000 width=12) (actual time=0.004..2.878 rows=120000.00 loops=1)
+                    Buffers: shared hit=1368
+        ->  Hash  (cost=117.28..117.28 rows=3000 width=20) (actual time=0.257..0.257 rows=3000.00 loops=1)
+              Buckets: 4096  Batches: 1  Memory Usage: 187kB
+              Buffers: shared hit=18
+              ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=20) (actual time=0.025..0.126 rows=3000.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=18
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.421 ms
+Execution Time: 13.852 ms
+=== R19 run 3 ===
+Sort  (cost=4419.50..4427.00 rows=3000 width=36) (actual time=13.741..13.791 rows=3000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 262kB
+  Buffers: shared hit=1389
+  ->  Hash Right Join  (cost=3922.78..4246.24 rows=3000 width=36) (actual time=11.745..13.461 rows=3000.00 loops=1)
+        Hash Cond: (m.chat_id = c.chat_id)
+        Buffers: shared hit=1386
+        ->  HashAggregate  (cost=3768.00..3910.96 rows=14296 width=20) (actual time=11.478..12.312 rows=21164.00 loops=1)
+              Group Key: m.chat_id
+              Batches: 1  Memory Usage: 1817kB
+              Buffers: shared hit=1368
+              ->  Seq Scan on messages m  (cost=0.00..2568.00 rows=120000 width=12) (actual time=0.004..2.906 rows=120000.00 loops=1)
+                    Buffers: shared hit=1368
+        ->  Hash  (cost=117.28..117.28 rows=3000 width=20) (actual time=0.261..0.262 rows=3000.00 loops=1)
+              Buckets: 4096  Batches: 1  Memory Usage: 187kB
+              Buffers: shared hit=18
+              ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=20) (actual time=0.026..0.126 rows=3000.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=18
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.427 ms
+Execution Time: 13.885 ms
+=== R19 run 4 ===
+Sort  (cost=4419.50..4427.00 rows=3000 width=36) (actual time=14.110..14.175 rows=3000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 262kB
+  Buffers: shared hit=1389
+  ->  Hash Right Join  (cost=3922.78..4246.24 rows=3000 width=36) (actual time=11.886..13.819 rows=3000.00 loops=1)
+        Hash Cond: (m.chat_id = c.chat_id)
+        Buffers: shared hit=1386
+        ->  HashAggregate  (cost=3768.00..3910.96 rows=14296 width=20) (actual time=11.617..12.538 rows=21164.00 loops=1)
+              Group Key: m.chat_id
+              Batches: 1  Memory Usage: 1817kB
+              Buffers: shared hit=1368
+              ->  Seq Scan on messages m  (cost=0.00..2568.00 rows=120000 width=12) (actual time=0.004..2.895 rows=120000.00 loops=1)
+                    Buffers: shared hit=1368
+        ->  Hash  (cost=117.28..117.28 rows=3000 width=20) (actual time=0.265..0.265 rows=3000.00 loops=1)
+              Buckets: 4096  Batches: 1  Memory Usage: 187kB
+              Buffers: shared hit=18
+              ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=20) (actual time=0.030..0.132 rows=3000.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=18
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.464 ms
+Execution Time: 14.283 ms
+=== R19 run 5 ===
+Sort  (cost=4419.50..4427.00 rows=3000 width=36) (actual time=14.176..14.228 rows=3000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 262kB
+  Buffers: shared hit=1389
+  ->  Hash Right Join  (cost=3922.78..4246.24 rows=3000 width=36) (actual time=12.076..13.893 rows=3000.00 loops=1)
+        Hash Cond: (m.chat_id = c.chat_id)
+        Buffers: shared hit=1386
+        ->  HashAggregate  (cost=3768.00..3910.96 rows=14296 width=20) (actual time=11.787..12.650 rows=21164.00 loops=1)
+              Group Key: m.chat_id
+              Batches: 1  Memory Usage: 1817kB
+              Buffers: shared hit=1368
+              ->  Seq Scan on messages m  (cost=0.00..2568.00 rows=120000 width=12) (actual time=0.004..2.980 rows=120000.00 loops=1)
+                    Buffers: shared hit=1368
+        ->  Hash  (cost=117.28..117.28 rows=3000 width=20) (actual time=0.282..0.282 rows=3000.00 loops=1)
+              Buckets: 4096  Batches: 1  Memory Usage: 187kB
+              Buffers: shared hit=18
+              ->  Index Only Scan using idx_chats_group on chats c  (cost=0.28..117.28 rows=3000 width=20) (actual time=0.041..0.144 rows=3000.00 loops=1)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=18
+Planning:
+  Buffers: shared hit=290
+Planning Time: 0.493 ms
+Execution Time: 14.328 ms

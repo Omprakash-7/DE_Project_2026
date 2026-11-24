@@ -33,3 +33,41 @@
 | W04: Broadcast: create delivery receipts for 5,000 recipients of a business announcement | WRITE | 25.672 | 26.248 | 26.262 | 26.061 |
 | W05: User 965 leaves group 20898 | WRITE | 0.160 | 0.135 | 0.132 | 0.142 |
 | **Total (sum of all 30)** | | **17995.471** | **17895.101** | **15906.367** | **17265.649** |
+
+---
+
+## Scan Types and Plan Reasons (All 30 Queries)
+
+| Query | Scan Type(s) from Baseline Plan | Why It Is Fast or Slow |
+|---|---|---|
+| **R01** | `Index Scan using chat_members_pkey` · `Index Scan using chats_pkey` · `Seq Scan on messages` | Slow (18.377 ms): `chat_members_pkey` scans 295 pages because `user_id` is trailing, and lateral `LIMIT 1` performs 4 separate full `Seq Scan`s of 120k `messages`. |
+| **R02** | `Seq Scan on messages` | Slow (3.506 ms): No index on `messages(chat_id, sent_at DESC)`, forcing a full scan of 120,000 rows to return 34 rows for group 22556. |
+| **R03** | `Seq Scan on message_receipts` · `Index Scan using messages_pkey` | Slow (7.705 ms): `Parallel Seq Scan` reads all 501,590 receipts (3,584 pages) because no index exists on `message_receipts(user_id)`. |
+| **R04** | `Seq Scan on messages` · `Index Only Scan using chat_members_pkey` | Slow (33.006 ms): No index on `messages(chat_id)` or `body`, forcing a full scan evaluating `ILIKE '%meeting%'` across 120k rows before hash joining 4 chats. |
+| **R05** | `Index Scan using users_phone_e164_key` | Fast (0.022 ms): Point lookup directly uses the automatic `UNIQUE` B-tree index on `users(phone_e164)`. |
+| **R06** | `Index Only Scan using chat_members_pkey` · `Index Scan using chats_pkey` · `Index Scan using users_pkey` | Moderate (0.981 ms): Uses PKs on `chats`/`users`, but `me.user_id = 965` reads 295 pages of `chat_members_pkey` because `user_id` is the second key column. |
+| **R07** | `Index Scan using chat_members_pkey` · `Index Scan using users_pkey` | Fast (0.117 ms): Filters on leading PK column `chat_id = 22556` in `chat_members_pkey` (22 rows) plus PK lookups into `users`. |
+| **R08** | `Seq Scan on messages` · `Seq Scan on message_receipts` | Slow (13.536 ms): `Parallel Seq Scan` reads all 501,590 receipts to find 5,076 NULLs and `Parallel Seq Scan` reads all 120k messages before a Parallel Hash Join. |
+| **R09** | `Seq Scan on media` | Moderate (8.076 ms): Must aggregate `size_bytes` across all 27,634 rows of `media` with a full `Seq Scan` + `HashAggregate`. |
+| **R10** | `Seq Scan on messages` | Slow (7.571 ms): Non-sargable `sent_at::date` filter plus no `sent_at` index forces a full 120k-row `Seq Scan` to retrieve 6,593 June rows. |
+| **R11** | `Index Only Scan using chat_members_pkey` · `Seq Scan on calls` | Slow (3.065 ms): No index on `calls(chat_id)` and non-sargable `EXTRACT(YEAR FROM started_at)` force a full scan of all 25,000 calls. |
+| **R12** | `Seq Scan on messages` | Slow (5.358 ms): Full scan of 120,000 messages even though `is_forwarded = true` matches only 5,998 rows (~5%). |
+| **R13** | `Seq Scan on messages` (twice) | Slow & Buggy (19.205 ms): Scans all 120k messages twice; `NOT IN` over `reply_to_message_id` (105,090 NULLs) evaluates to `UNKNOWN` and returns 0 rows. |
+| **R14** | `Seq Scan on messages` · `Seq Scan on chats` | Slow (6.118 ms): Full scans of 120k messages (no `sent_at` index) and 23k chats (no partial `GROUP` index). |
+| **R15** | `Index Only Scan using blocked_users_pkey` | Fast (0.025 ms): Direct B-tree lookup on composite PK `(blocker_id, blocked_id)` with zero heap fetches. |
+| **R16** | `Index Scan using message_receipts_pkey` · `Index Scan using users_pkey` | Fast (0.061 ms): Filters on leading PK column `message_id = 119989` in `message_receipts_pkey` (6 rows) plus `users_pkey` lookups. |
+| **R17** | `Seq Scan on message_receipts` · `Seq Scan on messages` | Slow (15.929 ms): Full parallel scans of both 501,590 receipts and 120,000 messages before a Hash Join. |
+| **R18** | `Seq Scan on chat_members` · `Seq Scan on chats` · `Seq Scan on users` | Slow (14.484 ms): Full scans on all three tables due to missing indexes on `users(last_seen_at)` and `chats(chat_type)` plus active-member join. |
+| **R19** | `Seq Scan on chats` · `Seq Scan on messages` (×6,000) | Extremely Slow (17,003.794 ms): Evaluates two correlated subqueries per `GROUP` chat (3,000 groups), executing 6,000 full sequential scans of 120k `messages` (8,208,179 buffer hits). |
+| **R20** | `Seq Scan on messages` | Slow (43.136 ms): Full scan of 120k messages plus an external disk merge sort (`Disk: 2392kB`) because `EXTRACT(HOUR FROM sent_at)` has no distinct-value stats. |
+| **R21** | `Seq Scan on messages` | Moderate (12.254 ms): Aggregates edit/delete counts across all 120,000 rows via a single `Seq Scan` + `HashAggregate`. |
+| **R22** | `Index Scan using messages_pkey` (Backward) | Slow (8.942 ms): Backward scan on `messages_pkey` still reads and discards 100,000 rows (`OFFSET 100000`) before returning 25 rows. |
+| **R23** | `Seq Scan on devices` | Slow (3.216 ms): Scans all 42,000 devices and sorts 6,945 stale WEB/DESKTOP rows in memory (`464kB`) due to no partial index on `(last_active_at)`. |
+| **R24** | `Seq Scan on media` | Moderate (6.659 ms): Full scan of 27,634 rows + `HashAggregate` (5,393 kB) to group every `sha256` and keep duplicates. |
+| **R25** | `Index Scan using messages_pkey` | Fast (0.060 ms): Recursive CTE follows `reply_to_message_id` up 3 hops using direct PK lookups on `messages_pkey`. |
+| **W01** | `(no scan)` + FK trigger lookups | Fast (0.625 ms): Single-row `INSERT` with 4 FK validation lookups (`chats_pkey`, `users_pkey`, etc.). |
+| **W02** | `Seq Scan on messages` · `Index Scan using message_receipts_pkey` | Slow (3.468 ms): Full scan of 120,000 messages to find the 34 messages of group 22556 before updating 14 unread receipts via PK. |
+| **W03** | `Index Scan using messages_pkey` | Fast (0.150 ms): Single-row `UPDATE` located directly via `messages_pkey`. |
+| **W04** | `(no scan)` + 5,000×2 FK trigger checks | Moderate (26.061 ms): Bulk `INSERT` of 5,000 rows into `message_receipts`, incurring 5,000 PK conflict checks and 10,000 FK trigger checks. |
+| **W05** | `Index Scan using chat_members_pkey` | Fast (0.142 ms): Single-row `UPDATE` located directly via composite PK `(chat_id, user_id)`. |
+

@@ -1,0 +1,110 @@
+=== R13 run 1 ===
+Nested Loop Anti Join  (cost=4.76..53.39 rows=2 width=40) (actual time=0.018..0.059 rows=7.00 loops=1)
+  Buffers: shared hit=49
+  ->  Bitmap Heap Scan on messages m  (cost=4.48..34.76 rows=2 width=40) (actual time=0.014..0.045 rows=9.00 loops=1)
+        Recheck Cond: (chat_id = 20501)
+        Filter: (body ~~ '%?%'::text)
+        Rows Removed by Filter: 18
+        Heap Blocks: exact=27
+        Buffers: shared hit=30
+        ->  Bitmap Index Scan on idx_messages_chat_sent  (cost=0.00..4.48 rows=8 width=0) (actual time=0.008..0.008 rows=27.00 loops=1)
+              Index Cond: (chat_id = 20501)
+              Index Searches: 1
+              Buffers: shared hit=3
+  ->  Index Only Scan using idx_messages_reply_to on messages r  (cost=0.29..6.30 rows=1 width=8) (actual time=0.001..0.001 rows=0.22 loops=9)
+        Index Cond: (reply_to_message_id = m.message_id)
+        Heap Fetches: 0
+        Index Searches: 9
+        Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=334
+Planning Time: 0.443 ms
+Execution Time: 0.082 ms
+=== R13 run 2 ===
+Nested Loop Anti Join  (cost=4.76..53.39 rows=2 width=40) (actual time=0.018..0.060 rows=7.00 loops=1)
+  Buffers: shared hit=49
+  ->  Bitmap Heap Scan on messages m  (cost=4.48..34.76 rows=2 width=40) (actual time=0.014..0.044 rows=9.00 loops=1)
+        Recheck Cond: (chat_id = 20501)
+        Filter: (body ~~ '%?%'::text)
+        Rows Removed by Filter: 18
+        Heap Blocks: exact=27
+        Buffers: shared hit=30
+        ->  Bitmap Index Scan on idx_messages_chat_sent  (cost=0.00..4.48 rows=8 width=0) (actual time=0.007..0.007 rows=27.00 loops=1)
+              Index Cond: (chat_id = 20501)
+              Index Searches: 1
+              Buffers: shared hit=3
+  ->  Index Only Scan using idx_messages_reply_to on messages r  (cost=0.29..6.30 rows=1 width=8) (actual time=0.002..0.002 rows=0.22 loops=9)
+        Index Cond: (reply_to_message_id = m.message_id)
+        Heap Fetches: 0
+        Index Searches: 9
+        Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=334
+Planning Time: 0.432 ms
+Execution Time: 0.082 ms
+=== R13 run 3 ===
+Nested Loop Anti Join  (cost=4.76..53.39 rows=2 width=40) (actual time=0.017..0.057 rows=7.00 loops=1)
+  Buffers: shared hit=49
+  ->  Bitmap Heap Scan on messages m  (cost=4.48..34.76 rows=2 width=40) (actual time=0.014..0.043 rows=9.00 loops=1)
+        Recheck Cond: (chat_id = 20501)
+        Filter: (body ~~ '%?%'::text)
+        Rows Removed by Filter: 18
+        Heap Blocks: exact=27
+        Buffers: shared hit=30
+        ->  Bitmap Index Scan on idx_messages_chat_sent  (cost=0.00..4.48 rows=8 width=0) (actual time=0.008..0.008 rows=27.00 loops=1)
+              Index Cond: (chat_id = 20501)
+              Index Searches: 1
+              Buffers: shared hit=3
+  ->  Index Only Scan using idx_messages_reply_to on messages r  (cost=0.29..6.30 rows=1 width=8) (actual time=0.001..0.001 rows=0.22 loops=9)
+        Index Cond: (reply_to_message_id = m.message_id)
+        Heap Fetches: 0
+        Index Searches: 9
+        Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=334
+Planning Time: 0.429 ms
+Execution Time: 0.079 ms
+=== R13 run 4 ===
+Nested Loop Anti Join  (cost=4.76..53.39 rows=2 width=40) (actual time=0.017..0.056 rows=7.00 loops=1)
+  Buffers: shared hit=49
+  ->  Bitmap Heap Scan on messages m  (cost=4.48..34.76 rows=2 width=40) (actual time=0.014..0.043 rows=9.00 loops=1)
+        Recheck Cond: (chat_id = 20501)
+        Filter: (body ~~ '%?%'::text)
+        Rows Removed by Filter: 18
+        Heap Blocks: exact=27
+        Buffers: shared hit=30
+        ->  Bitmap Index Scan on idx_messages_chat_sent  (cost=0.00..4.48 rows=8 width=0) (actual time=0.007..0.008 rows=27.00 loops=1)
+              Index Cond: (chat_id = 20501)
+              Index Searches: 1
+              Buffers: shared hit=3
+  ->  Index Only Scan using idx_messages_reply_to on messages r  (cost=0.29..6.30 rows=1 width=8) (actual time=0.001..0.001 rows=0.22 loops=9)
+        Index Cond: (reply_to_message_id = m.message_id)
+        Heap Fetches: 0
+        Index Searches: 9
+        Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=334
+Planning Time: 0.443 ms
+Execution Time: 0.078 ms
+=== R13 run 5 ===
+Nested Loop Anti Join  (cost=4.76..53.39 rows=2 width=40) (actual time=0.017..0.057 rows=7.00 loops=1)
+  Buffers: shared hit=49
+  ->  Bitmap Heap Scan on messages m  (cost=4.48..34.76 rows=2 width=40) (actual time=0.014..0.043 rows=9.00 loops=1)
+        Recheck Cond: (chat_id = 20501)
+        Filter: (body ~~ '%?%'::text)
+        Rows Removed by Filter: 18
+        Heap Blocks: exact=27
+        Buffers: shared hit=30
+        ->  Bitmap Index Scan on idx_messages_chat_sent  (cost=0.00..4.48 rows=8 width=0) (actual time=0.007..0.007 rows=27.00 loops=1)
+              Index Cond: (chat_id = 20501)
+              Index Searches: 1
+              Buffers: shared hit=3
+  ->  Index Only Scan using idx_messages_reply_to on messages r  (cost=0.29..6.30 rows=1 width=8) (actual time=0.001..0.001 rows=0.22 loops=9)
+        Index Cond: (reply_to_message_id = m.message_id)
+        Heap Fetches: 0
+        Index Searches: 9
+        Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=334
+Planning Time: 0.426 ms
+Execution Time: 0.078 ms

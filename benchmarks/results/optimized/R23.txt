@@ -1,0 +1,50 @@
+=== R23 run 1 ===
+Index Only Scan using idx_devices_linked_active on devices d  (cost=0.29..227.83 rows=5917 width=22) (actual time=0.034..0.275 rows=6945.00 loops=1)
+  Index Cond: (last_active_at < '2026-06-01 00:00:00+05:30'::timestamp with time zone)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=37
+Planning:
+  Buffers: shared hit=173
+Planning Time: 0.276 ms
+Execution Time: 0.395 ms
+=== R23 run 2 ===
+Index Only Scan using idx_devices_linked_active on devices d  (cost=0.29..227.83 rows=5917 width=22) (actual time=0.027..0.274 rows=6945.00 loops=1)
+  Index Cond: (last_active_at < '2026-06-01 00:00:00+05:30'::timestamp with time zone)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=37
+Planning:
+  Buffers: shared hit=173
+Planning Time: 0.229 ms
+Execution Time: 0.389 ms
+=== R23 run 3 ===
+Index Only Scan using idx_devices_linked_active on devices d  (cost=0.29..227.83 rows=5917 width=22) (actual time=0.031..0.275 rows=6945.00 loops=1)
+  Index Cond: (last_active_at < '2026-06-01 00:00:00+05:30'::timestamp with time zone)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=37
+Planning:
+  Buffers: shared hit=173
+Planning Time: 0.242 ms
+Execution Time: 0.393 ms
+=== R23 run 4 ===
+Index Only Scan using idx_devices_linked_active on devices d  (cost=0.29..227.83 rows=5917 width=22) (actual time=0.028..0.293 rows=6945.00 loops=1)
+  Index Cond: (last_active_at < '2026-06-01 00:00:00+05:30'::timestamp with time zone)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=37
+Planning:
+  Buffers: shared hit=173
+Planning Time: 0.239 ms
+Execution Time: 0.405 ms
+=== R23 run 5 ===
+Index Only Scan using idx_devices_linked_active on devices d  (cost=0.29..227.83 rows=5917 width=22) (actual time=0.028..0.279 rows=6945.00 loops=1)
+  Index Cond: (last_active_at < '2026-06-01 00:00:00+05:30'::timestamp with time zone)
+  Heap Fetches: 0
+  Index Searches: 1
+  Buffers: shared hit=37
+Planning:
+  Buffers: shared hit=173
+Planning Time: 0.242 ms
+Execution Time: 0.392 ms

@@ -1,0 +1,60 @@
+=== W05 run 1 ===
+Update on chat_members  (cost=0.29..8.31 rows=0 width=0) (actual time=0.137..0.137 rows=0.00 loops=1)
+  Buffers: shared hit=34 dirtied=1
+  ->  Index Scan using chat_members_pkey on chat_members  (cost=0.29..8.31 rows=1 width=14) (actual time=0.010..0.011 rows=1.00 loops=1)
+        Index Cond: ((chat_id = 20898) AND (user_id = 965))
+        Filter: (left_at IS NULL)
+        Index Searches: 1
+        Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.218 ms
+Execution Time: 0.181 ms
+=== W05 run 2 ===
+Update on chat_members  (cost=0.29..8.31 rows=0 width=0) (actual time=0.100..0.100 rows=0.00 loops=1)
+  Buffers: shared hit=36
+  ->  Index Scan using chat_members_pkey on chat_members  (cost=0.29..8.31 rows=1 width=14) (actual time=0.013..0.015 rows=1.00 loops=1)
+        Index Cond: ((chat_id = 20898) AND (user_id = 965))
+        Filter: (left_at IS NULL)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.175 ms
+Execution Time: 0.139 ms
+=== W05 run 3 ===
+Update on chat_members  (cost=0.29..8.31 rows=0 width=0) (actual time=0.101..0.101 rows=0.00 loops=1)
+  Buffers: shared hit=36
+  ->  Index Scan using chat_members_pkey on chat_members  (cost=0.29..8.31 rows=1 width=14) (actual time=0.013..0.015 rows=1.00 loops=1)
+        Index Cond: ((chat_id = 20898) AND (user_id = 965))
+        Filter: (left_at IS NULL)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.181 ms
+Execution Time: 0.141 ms
+=== W05 run 4 ===
+Update on chat_members  (cost=0.29..8.31 rows=0 width=0) (actual time=0.141..0.141 rows=0.00 loops=1)
+  Buffers: shared hit=36
+  ->  Index Scan using chat_members_pkey on chat_members  (cost=0.29..8.31 rows=1 width=14) (actual time=0.019..0.023 rows=1.00 loops=1)
+        Index Cond: ((chat_id = 20898) AND (user_id = 965))
+        Filter: (left_at IS NULL)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.259 ms
+Execution Time: 0.197 ms
+=== W05 run 5 ===
+Update on chat_members  (cost=0.29..8.31 rows=0 width=0) (actual time=0.106..0.106 rows=0.00 loops=1)
+  Buffers: shared hit=36
+  ->  Index Scan using chat_members_pkey on chat_members  (cost=0.29..8.31 rows=1 width=14) (actual time=0.014..0.017 rows=1.00 loops=1)
+        Index Cond: ((chat_id = 20898) AND (user_id = 965))
+        Filter: (left_at IS NULL)
+        Index Searches: 1
+        Buffers: shared hit=5
+Planning:
+  Buffers: shared hit=96
+Planning Time: 0.171 ms
+Execution Time: 0.149 ms
