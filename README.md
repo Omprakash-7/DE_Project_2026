@@ -4,6 +4,21 @@
 **Database:** PostgreSQL 15 or newer · **Final submission:** Mon 23 Nov 2026
 **Topics used:** Data types & constraints · Keys & relationships · Normalization · Query execution plans · Indexing · Query optimization · VACUUM/ANALYZE · Partitioning & sharding
 
+## Class demo path
+
+For a short walkthrough, compare the baseline and optimized R19 plans in
+[`benchmarks/results/`](benchmarks/results/) and read the explanation in
+[`docs/08_individual_analysis_r19.md`](docs/08_individual_analysis_r19.md).
+It shows how replacing repeated per-group scans with one aggregate changes the
+work performed. Then look at the deep-pagination comparison in
+[`docs/11_individual_analysis_r22.md`](docs/11_individual_analysis_r22.md)
+and the large-data R08 discussion in
+[`docs/10_individual_analysis_r08.md`](docs/10_individual_analysis_r08.md).
+
+The partitioning script is a separate pruning demonstration; its rollout
+constraints and the required key changes are summarized in
+[`docs/14_individual_analysis_partitioning.md`](docs/14_individual_analysis_partitioning.md).
+
 ## Files in this folder
 
 | Path | What it is |
