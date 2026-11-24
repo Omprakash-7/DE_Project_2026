@@ -1,0 +1,69 @@
+=== R19 run 1 ===
+Sort  (cost=145534.07..145686.33 rows=60904 width=36) (actual time=251.981..253.850 rows=60000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: external merge  Disk: 2984kB
+  Buffers: shared hit=629 read=18604 dirtied=1 written=438, temp read=373 written=374
+  ->  Merge Left Join  (cost=0.84..140693.96 rows=60904 width=36) (actual time=117.005..242.759 rows=60000.00 loops=1)
+        Merge Cond: (c.chat_id = m.chat_id)
+        Buffers: shared hit=626 read=18604 dirtied=1 written=438
+        ->  Index Only Scan using idx_chats_group on chats c  (cost=0.41..2133.97 rows=60904 width=20) (actual time=0.036..2.691 rows=60000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=291 read=13
+        ->  GroupAggregate  (cost=0.43..136282.08 rows=153765 width=20) (actual time=0.037..228.051 rows=423778.00 loops=1)
+              Group Key: m.chat_id
+              Buffers: shared hit=335 read=18591 dirtied=1 written=438
+              ->  Index Only Scan using idx_messages_chat_sent on messages m  (cost=0.43..110744.43 rows=2400000 width=12) (actual time=0.034..124.945 rows=2400000.00 loops=1)
+                    Heap Fetches: 414
+                    Index Searches: 1
+                    Buffers: shared hit=335 read=18591 dirtied=1 written=438
+Planning:
+  Buffers: shared hit=288
+Planning Time: 0.517 ms
+Execution Time: 255.490 ms
+=== R19 run 2 ===
+Sort  (cost=145534.07..145686.33 rows=60904 width=36) (actual time=256.950..258.810 rows=60000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: external merge  Disk: 2984kB
+  Buffers: shared hit=465 read=18765 written=370, temp read=373 written=374
+  ->  Merge Left Join  (cost=0.84..140693.96 rows=60904 width=36) (actual time=120.588..247.851 rows=60000.00 loops=1)
+        Merge Cond: (c.chat_id = m.chat_id)
+        Buffers: shared hit=462 read=18765 written=370
+        ->  Index Only Scan using idx_chats_group on chats c  (cost=0.41..2133.97 rows=60904 width=20) (actual time=0.035..2.401 rows=60000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=132 read=172
+        ->  GroupAggregate  (cost=0.43..136282.08 rows=153765 width=20) (actual time=0.035..233.496 rows=423778.00 loops=1)
+              Group Key: m.chat_id
+              Buffers: shared hit=330 read=18593 written=370
+              ->  Index Only Scan using idx_messages_chat_sent on messages m  (cost=0.43..110744.43 rows=2400000 width=12) (actual time=0.033..127.127 rows=2400000.00 loops=1)
+                    Heap Fetches: 408
+                    Index Searches: 1
+                    Buffers: shared hit=330 read=18593 written=370
+Planning:
+  Buffers: shared hit=288
+Planning Time: 0.579 ms
+Execution Time: 260.467 ms
+=== R19 run 3 ===
+Sort  (cost=145534.07..145686.33 rows=60904 width=36) (actual time=255.797..257.648 rows=60000.00 loops=1)
+  Sort Key: (max(m.sent_at)) DESC NULLS LAST
+  Sort Method: external merge  Disk: 2984kB
+  Buffers: shared hit=330 read=18900, temp read=373 written=374
+  ->  Merge Left Join  (cost=0.84..140693.96 rows=60904 width=36) (actual time=118.586..246.764 rows=60000.00 loops=1)
+        Merge Cond: (c.chat_id = m.chat_id)
+        Buffers: shared hit=327 read=18900
+        ->  Index Only Scan using idx_chats_group on chats c  (cost=0.41..2133.97 rows=60904 width=20) (actual time=0.032..2.485 rows=60000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=3 read=301
+        ->  GroupAggregate  (cost=0.43..136282.08 rows=153765 width=20) (actual time=0.033..232.333 rows=423778.00 loops=1)
+              Group Key: m.chat_id
+              Buffers: shared hit=324 read=18599
+              ->  Index Only Scan using idx_messages_chat_sent on messages m  (cost=0.43..110744.43 rows=2400000 width=12) (actual time=0.030..126.282 rows=2400000.00 loops=1)
+                    Heap Fetches: 408
+                    Index Searches: 1
+                    Buffers: shared hit=324 read=18599
+Planning:
+  Buffers: shared hit=265 read=23
+Planning Time: 1.366 ms
+Execution Time: 259.342 ms

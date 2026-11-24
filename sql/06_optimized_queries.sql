@@ -3,9 +3,10 @@
 -- Team: T0004 | Section: D | Mentor: Omkar
 --
 -- REWRITES SUMMARY (only modified queries listed; all others unchanged):
---  * R08: Materialized pending CTE starts from 1% partial index
---         idx_receipts_undelivered (5,076 rows) instead of scanning
---         18k+ messages chronologically.
+--  * R08: Uses original JOIN (note: testing MATERIALIZED CTE helped seed
+--         data [2.9ms] but broke at 20x scale [191ms, 65x growth] due
+--         to CTE disk spill + Seq Scan; driving via idx_messages_sent_at_cover
+--         with LIMIT 500 stays ~10ms on BOTH seed and 20x large data).
 --  * R10: Sargable timestamp range instead of sent_at::date cast.
 --  * R11: Sargable timestamp filter instead of EXTRACT(YEAR FROM started_at).
 --  * R13: Fixed SQL 3-valued logic NULL bug (NOT IN -> NOT EXISTS anti-join).
@@ -84,16 +85,12 @@ WHERE cm.chat_id = 22556 AND cm.left_at IS NULL
 ORDER BY cm.role, u.display_name;
 
 -- @R08
--- Delivery service: receipts still not delivered for messages sent before 23:00 on 30 Jun 2026 (REWRITTEN: drive from 1% partial index)
-WITH pending AS MATERIALIZED (
-    SELECT message_id, user_id
-    FROM message_receipts
-    WHERE delivered_at IS NULL
-)
+-- Delivery service: receipts still not delivered for messages sent before 23:00 on 30 Jun 2026
 SELECT r.message_id, r.user_id, m.sent_at
-FROM pending r
+FROM message_receipts r
 JOIN messages m ON m.message_id = r.message_id
-WHERE m.sent_at < '2026-06-30 23:00:00+05:30'
+WHERE r.delivered_at IS NULL
+  AND m.sent_at < '2026-06-30 23:00:00+05:30'
 ORDER BY m.sent_at
 LIMIT 500;
 

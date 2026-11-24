@@ -1,12 +1,12 @@
 === R05 run 1 ===
-Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.009..0.009 rows=1.00 loops=1)
+Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.462..0.462 rows=1.00 loops=1)
   Index Cond: ((phone_e164)::text = '+919000000965'::text)
   Index Searches: 1
-  Buffers: shared hit=3
+  Buffers: shared read=3
 Planning:
-  Buffers: shared hit=115
-Planning Time: 0.224 ms
-Execution Time: 0.021 ms
+  Buffers: shared hit=110 read=5
+Planning Time: 0.885 ms
+Execution Time: 0.476 ms
 === R05 run 2 ===
 Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.009..0.009 rows=1.00 loops=1)
   Index Cond: ((phone_e164)::text = '+919000000965'::text)
@@ -14,8 +14,8 @@ Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23
   Buffers: shared hit=3
 Planning:
   Buffers: shared hit=115
-Planning Time: 0.198 ms
-Execution Time: 0.020 ms
+Planning Time: 0.252 ms
+Execution Time: 0.027 ms
 === R05 run 3 ===
 Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.009..0.009 rows=1.00 loops=1)
   Index Cond: ((phone_e164)::text = '+919000000965'::text)
@@ -23,7 +23,7 @@ Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23
   Buffers: shared hit=3
 Planning:
   Buffers: shared hit=115
-Planning Time: 0.197 ms
+Planning Time: 0.209 ms
 Execution Time: 0.022 ms
 === R05 run 4 ===
 Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.008..0.008 rows=1.00 loops=1)
@@ -32,14 +32,14 @@ Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23
   Buffers: shared hit=3
 Planning:
   Buffers: shared hit=115
-Planning Time: 0.199 ms
+Planning Time: 0.191 ms
 Execution Time: 0.021 ms
 === R05 run 5 ===
-Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.009..0.009 rows=1.00 loops=1)
+Index Scan using users_phone_e164_key on users  (cost=0.29..8.30 rows=1 width=23) (actual time=0.009..0.010 rows=1.00 loops=1)
   Index Cond: ((phone_e164)::text = '+919000000965'::text)
   Index Searches: 1
   Buffers: shared hit=3
 Planning:
   Buffers: shared hit=115
-Planning Time: 0.197 ms
-Execution Time: 0.021 ms
+Planning Time: 0.227 ms
+Execution Time: 0.023 ms

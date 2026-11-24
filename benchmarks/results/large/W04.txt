@@ -1,0 +1,42 @@
+=== W04 run 1 ===
+Insert on message_receipts  (cost=0.00..50.00 rows=0 width=0) (actual time=14.829..14.830 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: message_receipts_pkey
+  Tuples Inserted: 5000
+  Conflicting Tuples: 0
+  Buffers: shared hit=70094 read=287 dirtied=251 written=27
+  ->  Function Scan on generate_series g  (cost=0.00..50.00 rows=5000 width=28) (actual time=0.119..0.310 rows=5000.00 loops=1)
+Planning:
+  Buffers: shared hit=67
+Planning Time: 0.083 ms
+Trigger for constraint fk_receipts_message: time=9.443 calls=5000
+Trigger for constraint fk_receipts_user: time=9.773 calls=5000
+Execution Time: 34.303 ms
+=== W04 run 2 ===
+Insert on message_receipts  (cost=0.00..50.00 rows=0 width=0) (actual time=14.095..14.096 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: message_receipts_pkey
+  Tuples Inserted: 5000
+  Conflicting Tuples: 0
+  Buffers: shared hit=71463 dirtied=27 written=27
+  ->  Function Scan on generate_series g  (cost=0.00..50.00 rows=5000 width=28) (actual time=0.106..0.289 rows=5000.00 loops=1)
+Planning:
+  Buffers: shared hit=67
+Planning Time: 0.076 ms
+Trigger for constraint fk_receipts_message: time=9.095 calls=5000
+Trigger for constraint fk_receipts_user: time=9.516 calls=5000
+Execution Time: 32.946 ms
+=== W04 run 3 ===
+Insert on message_receipts  (cost=0.00..50.00 rows=0 width=0) (actual time=14.860..14.860 rows=0.00 loops=1)
+  Conflict Resolution: NOTHING
+  Conflict Arbiter Indexes: message_receipts_pkey
+  Tuples Inserted: 5000
+  Conflicting Tuples: 0
+  Buffers: shared hit=71419 dirtied=27 written=27
+  ->  Function Scan on generate_series g  (cost=0.00..50.00 rows=5000 width=28) (actual time=0.119..0.306 rows=5000.00 loops=1)
+Planning:
+  Buffers: shared hit=67
+Planning Time: 0.101 ms
+Trigger for constraint fk_receipts_message: time=9.423 calls=5000
+Trigger for constraint fk_receipts_user: time=9.969 calls=5000
+Execution Time: 34.506 ms

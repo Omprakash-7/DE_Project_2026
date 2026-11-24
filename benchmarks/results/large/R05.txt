@@ -1,0 +1,27 @@
+=== R05 run 1 ===
+Index Scan using users_phone_e164_key on users  (cost=0.42..8.44 rows=1 width=23) (actual time=0.405..0.405 rows=1.00 loops=1)
+  Index Cond: ((phone_e164)::text = '+919000000965'::text)
+  Index Searches: 1
+  Buffers: shared hit=1 read=3
+Planning:
+  Buffers: shared hit=113 read=2
+Planning Time: 0.274 ms
+Execution Time: 0.418 ms
+=== R05 run 2 ===
+Index Scan using users_phone_e164_key on users  (cost=0.42..8.44 rows=1 width=23) (actual time=0.009..0.010 rows=1.00 loops=1)
+  Index Cond: ((phone_e164)::text = '+919000000965'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=115
+Planning Time: 0.230 ms
+Execution Time: 0.023 ms
+=== R05 run 3 ===
+Index Scan using users_phone_e164_key on users  (cost=0.42..8.44 rows=1 width=23) (actual time=0.010..0.011 rows=1.00 loops=1)
+  Index Cond: ((phone_e164)::text = '+919000000965'::text)
+  Index Searches: 1
+  Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=115
+Planning Time: 0.230 ms
+Execution Time: 0.024 ms

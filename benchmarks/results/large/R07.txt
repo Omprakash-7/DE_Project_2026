@@ -1,0 +1,60 @@
+=== R07 run 1 ===
+Sort  (cost=161.89..161.93 rows=15 width=30) (actual time=0.604..0.604 rows=2.00 loops=1)
+  Sort Key: cm.role, u.display_name
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=8 read=7
+  ->  Nested Loop  (cost=0.85..161.60 rows=15 width=30) (actual time=0.451..0.581 rows=2.00 loops=1)
+        Buffers: shared hit=5 read=7
+        ->  Index Scan using chat_members_pkey on chat_members cm  (cost=0.43..34.96 rows=15 width=18) (actual time=0.234..0.235 rows=2.00 loops=1)
+              Index Cond: (chat_id = 22556)
+              Filter: (left_at IS NULL)
+              Index Searches: 1
+              Buffers: shared hit=2 read=2
+        ->  Index Scan using users_pkey on users u  (cost=0.42..8.44 rows=1 width=16) (actual time=0.172..0.172 rows=1.00 loops=2)
+              Index Cond: (user_id = cm.user_id)
+              Index Searches: 2
+              Buffers: shared hit=3 read=5
+Planning:
+  Buffers: shared hit=283 read=1
+Planning Time: 0.488 ms
+Execution Time: 0.627 ms
+=== R07 run 2 ===
+Sort  (cost=161.89..161.93 rows=15 width=30) (actual time=0.031..0.031 rows=2.00 loops=1)
+  Sort Key: cm.role, u.display_name
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=15
+  ->  Nested Loop  (cost=0.85..161.60 rows=15 width=30) (actual time=0.011..0.014 rows=2.00 loops=1)
+        Buffers: shared hit=12
+        ->  Index Scan using chat_members_pkey on chat_members cm  (cost=0.43..34.96 rows=15 width=18) (actual time=0.006..0.006 rows=2.00 loops=1)
+              Index Cond: (chat_id = 22556)
+              Filter: (left_at IS NULL)
+              Index Searches: 1
+              Buffers: shared hit=4
+        ->  Index Scan using users_pkey on users u  (cost=0.42..8.44 rows=1 width=16) (actual time=0.003..0.003 rows=1.00 loops=2)
+              Index Cond: (user_id = cm.user_id)
+              Index Searches: 2
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.429 ms
+Execution Time: 0.054 ms
+=== R07 run 3 ===
+Sort  (cost=161.89..161.93 rows=15 width=30) (actual time=0.031..0.031 rows=2.00 loops=1)
+  Sort Key: cm.role, u.display_name
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=15
+  ->  Nested Loop  (cost=0.85..161.60 rows=15 width=30) (actual time=0.011..0.014 rows=2.00 loops=1)
+        Buffers: shared hit=12
+        ->  Index Scan using chat_members_pkey on chat_members cm  (cost=0.43..34.96 rows=15 width=18) (actual time=0.005..0.006 rows=2.00 loops=1)
+              Index Cond: (chat_id = 22556)
+              Filter: (left_at IS NULL)
+              Index Searches: 1
+              Buffers: shared hit=4
+        ->  Index Scan using users_pkey on users u  (cost=0.42..8.44 rows=1 width=16) (actual time=0.004..0.004 rows=1.00 loops=2)
+              Index Cond: (user_id = cm.user_id)
+              Index Searches: 2
+              Buffers: shared hit=8
+Planning:
+  Buffers: shared hit=284
+Planning Time: 0.435 ms
+Execution Time: 0.051 ms

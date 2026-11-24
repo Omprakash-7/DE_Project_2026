@@ -1,0 +1,69 @@
+=== R08 run 1 ===
+Limit  (cost=1000.87..3714.30 rows=500 width=20) (actual time=6.296..7.143 rows=500.00 loops=1)
+  Buffers: shared hit=53406
+  ->  Gather Merge  (cost=1000.87..544939.81 rows=100231 width=20) (actual time=6.296..7.124 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=53406
+        ->  Nested Loop  (cost=0.85..532370.64 rows=41763 width=20) (actual time=0.124..2.956 rows=247.00 loops=3)
+              Buffers: shared hit=53406
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.43..86558.46 rows=999930 width=16) (actual time=0.019..0.279 rows=5916.33 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=115
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.42..0.44 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=17749)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 17749
+                    Buffers: shared hit=53291
+Planning:
+  Buffers: shared hit=418
+Planning Time: 0.587 ms
+Execution Time: 7.174 ms
+=== R08 run 2 ===
+Limit  (cost=1000.87..3714.30 rows=500 width=20) (actual time=6.824..7.557 rows=500.00 loops=1)
+  Buffers: shared hit=59427 read=7
+  ->  Gather Merge  (cost=1000.87..544939.81 rows=100231 width=20) (actual time=6.824..7.537 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=59427 read=7
+        ->  Nested Loop  (cost=0.85..532370.64 rows=41763 width=20) (actual time=0.095..3.158 rows=291.00 loops=3)
+              Buffers: shared hit=59427 read=7
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.43..86558.46 rows=999930 width=16) (actual time=0.026..0.321 rows=6584.67 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=120 read=7
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.42..0.44 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=19754)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 19754
+                    Buffers: shared hit=59307
+Planning:
+  Buffers: shared hit=418
+Planning Time: 0.588 ms
+Execution Time: 7.586 ms
+=== R08 run 3 ===
+Limit  (cost=1000.87..3714.30 rows=500 width=20) (actual time=6.508..7.230 rows=500.00 loops=1)
+  Buffers: shared hit=58655
+  ->  Gather Merge  (cost=1000.87..544939.81 rows=100231 width=20) (actual time=6.508..7.213 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=58655
+        ->  Nested Loop  (cost=0.85..532370.64 rows=41763 width=20) (actual time=0.078..3.108 rows=285.67 loops=3)
+              Buffers: shared hit=58655
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.43..86558.46 rows=999930 width=16) (actual time=0.021..0.274 rows=6498.33 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=125
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.42..0.44 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=19495)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 19495
+                    Buffers: shared hit=58530
+Planning:
+  Buffers: shared hit=418
+Planning Time: 0.705 ms
+Execution Time: 7.260 ms

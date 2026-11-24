@@ -1,160 +1,115 @@
 === R08 run 1 ===
-Limit  (cost=2073.13..2074.38 rows=500 width=20) (actual time=2.786..2.809 rows=500.00 loops=1)
-  Buffers: shared hit=3568
-  CTE pending
-    ->  Index Only Scan using idx_receipts_undelivered on message_receipts  (cost=0.28..164.02 rows=5049 width=12) (actual time=0.022..0.166 rows=5076.00 loops=1)
-          Heap Fetches: 0
-          Index Searches: 1
-          Buffers: shared hit=22
-  ->  Sort  (cost=1909.11..1921.74 rows=5049 width=20) (actual time=2.785..2.793 rows=500.00 loops=1)
-        Sort Key: m.sent_at
-        Sort Method: top-N heapsort  Memory: 60kB
-        Buffers: shared hit=3568
-        ->  Nested Loop  (cost=0.30..1657.53 rows=5049 width=20) (actual time=0.032..2.586 rows=5048.00 loops=1)
-              Buffers: shared hit=3565
-              ->  CTE Scan on pending r  (cost=0.00..100.98 rows=5049 width=12) (actual time=0.023..0.469 rows=5076.00 loops=1)
-                    Storage: Memory  Maximum Storage: 263kB
-                    Buffers: shared hit=22
-              ->  Memoize  (cost=0.30..1.67 rows=1 width=16) (actual time=0.000..0.000 rows=0.99 loops=5076)
-                    Cache Key: r.message_id
-                    Cache Mode: logical
-                    Hits: 3895  Misses: 1181  Evictions: 0  Overflows: 0  Memory Usage: 139kB
-                    Buffers: shared hit=3543
-                    ->  Index Scan using messages_pkey on messages m  (cost=0.29..1.66 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=1181)
-                          Index Cond: (message_id = r.message_id)
-                          Filter: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
-                          Rows Removed by Filter: 0
-                          Index Searches: 1181
-                          Buffers: shared hit=3543
+Limit  (cost=1000.73..3054.94 rows=500 width=20) (actual time=5.526..6.456 rows=500.00 loops=1)
+  Buffers: shared hit=38040 read=8
+  ->  Gather Merge  (cost=1000.73..21896.13 rows=5086 width=20) (actual time=5.525..6.439 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=38040 read=8
+        ->  Nested Loop  (cost=0.70..20309.05 rows=2119 width=20) (actual time=0.065..2.569 rows=267.00 loops=3)
+              Buffers: shared hit=38040 read=8
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.42..4380.31 rows=49996 width=16) (actual time=0.017..0.344 rows=6310.33 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=115 read=7
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.29..0.31 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=18931)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 18931
+                    Buffers: shared hit=37925 read=1
 Planning:
-  Buffers: shared hit=382
-Planning Time: 0.506 ms
-Execution Time: 2.836 ms
+  Buffers: shared hit=417
+Planning Time: 0.607 ms
+Execution Time: 6.486 ms
 === R08 run 2 ===
-Limit  (cost=2073.13..2074.38 rows=500 width=20) (actual time=2.912..2.935 rows=500.00 loops=1)
-  Buffers: shared hit=3568
-  CTE pending
-    ->  Index Only Scan using idx_receipts_undelivered on message_receipts  (cost=0.28..164.02 rows=5049 width=12) (actual time=0.023..0.170 rows=5076.00 loops=1)
-          Heap Fetches: 0
-          Index Searches: 1
-          Buffers: shared hit=22
-  ->  Sort  (cost=1909.11..1921.74 rows=5049 width=20) (actual time=2.911..2.920 rows=500.00 loops=1)
-        Sort Key: m.sent_at
-        Sort Method: top-N heapsort  Memory: 60kB
-        Buffers: shared hit=3568
-        ->  Nested Loop  (cost=0.30..1657.53 rows=5049 width=20) (actual time=0.033..2.706 rows=5048.00 loops=1)
-              Buffers: shared hit=3565
-              ->  CTE Scan on pending r  (cost=0.00..100.98 rows=5049 width=12) (actual time=0.024..0.487 rows=5076.00 loops=1)
-                    Storage: Memory  Maximum Storage: 263kB
-                    Buffers: shared hit=22
-              ->  Memoize  (cost=0.30..1.67 rows=1 width=16) (actual time=0.000..0.000 rows=0.99 loops=5076)
-                    Cache Key: r.message_id
-                    Cache Mode: logical
-                    Hits: 3895  Misses: 1181  Evictions: 0  Overflows: 0  Memory Usage: 139kB
-                    Buffers: shared hit=3543
-                    ->  Index Scan using messages_pkey on messages m  (cost=0.29..1.66 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=1181)
-                          Index Cond: (message_id = r.message_id)
-                          Filter: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
-                          Rows Removed by Filter: 0
-                          Index Searches: 1181
-                          Buffers: shared hit=3543
+Limit  (cost=1000.73..3054.94 rows=500 width=20) (actual time=5.928..6.798 rows=500.00 loops=1)
+  Buffers: shared hit=38610 read=2
+  ->  Gather Merge  (cost=1000.73..21896.13 rows=5086 width=20) (actual time=5.927..6.781 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=38610 read=2
+        ->  Nested Loop  (cost=0.70..20309.05 rows=2119 width=20) (actual time=0.092..2.711 rows=270.00 loops=3)
+              Buffers: shared hit=38610 read=2
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.42..4380.31 rows=49996 width=16) (actual time=0.018..0.336 rows=6404.00 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=122 read=2
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.29..0.31 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=19212)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 19212
+                    Buffers: shared hit=38488
 Planning:
-  Buffers: shared hit=382
-Planning Time: 0.510 ms
-Execution Time: 2.964 ms
+  Buffers: shared hit=417
+Planning Time: 0.563 ms
+Execution Time: 6.830 ms
 === R08 run 3 ===
-Limit  (cost=2073.13..2074.38 rows=500 width=20) (actual time=2.790..2.814 rows=500.00 loops=1)
-  Buffers: shared hit=3568
-  CTE pending
-    ->  Index Only Scan using idx_receipts_undelivered on message_receipts  (cost=0.28..164.02 rows=5049 width=12) (actual time=0.024..0.166 rows=5076.00 loops=1)
-          Heap Fetches: 0
-          Index Searches: 1
-          Buffers: shared hit=22
-  ->  Sort  (cost=1909.11..1921.74 rows=5049 width=20) (actual time=2.790..2.798 rows=500.00 loops=1)
-        Sort Key: m.sent_at
-        Sort Method: top-N heapsort  Memory: 60kB
-        Buffers: shared hit=3568
-        ->  Nested Loop  (cost=0.30..1657.53 rows=5049 width=20) (actual time=0.034..2.592 rows=5048.00 loops=1)
-              Buffers: shared hit=3565
-              ->  CTE Scan on pending r  (cost=0.00..100.98 rows=5049 width=12) (actual time=0.025..0.465 rows=5076.00 loops=1)
-                    Storage: Memory  Maximum Storage: 263kB
-                    Buffers: shared hit=22
-              ->  Memoize  (cost=0.30..1.67 rows=1 width=16) (actual time=0.000..0.000 rows=0.99 loops=5076)
-                    Cache Key: r.message_id
-                    Cache Mode: logical
-                    Hits: 3895  Misses: 1181  Evictions: 0  Overflows: 0  Memory Usage: 139kB
-                    Buffers: shared hit=3543
-                    ->  Index Scan using messages_pkey on messages m  (cost=0.29..1.66 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=1181)
-                          Index Cond: (message_id = r.message_id)
-                          Filter: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
-                          Rows Removed by Filter: 0
-                          Index Searches: 1181
-                          Buffers: shared hit=3543
+Limit  (cost=1000.73..3054.94 rows=500 width=20) (actual time=6.218..6.928 rows=500.00 loops=1)
+  Buffers: shared hit=41798 read=10
+  ->  Gather Merge  (cost=1000.73..21896.13 rows=5086 width=20) (actual time=6.217..6.911 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=41798 read=10
+        ->  Nested Loop  (cost=0.70..20309.05 rows=2119 width=20) (actual time=0.069..2.641 rows=296.67 loops=3)
+              Buffers: shared hit=41798 read=10
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.42..4380.31 rows=49996 width=16) (actual time=0.018..0.303 rows=6935.00 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=124 read=10
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.29..0.31 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=20805)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 20805
+                    Buffers: shared hit=41674
 Planning:
-  Buffers: shared hit=382
-Planning Time: 0.508 ms
-Execution Time: 2.839 ms
+  Buffers: shared hit=417
+Planning Time: 0.604 ms
+Execution Time: 6.957 ms
 === R08 run 4 ===
-Limit  (cost=2073.13..2074.38 rows=500 width=20) (actual time=2.978..3.002 rows=500.00 loops=1)
-  Buffers: shared hit=3568
-  CTE pending
-    ->  Index Only Scan using idx_receipts_undelivered on message_receipts  (cost=0.28..164.02 rows=5049 width=12) (actual time=0.036..0.189 rows=5076.00 loops=1)
-          Heap Fetches: 0
-          Index Searches: 1
-          Buffers: shared hit=22
-  ->  Sort  (cost=1909.11..1921.74 rows=5049 width=20) (actual time=2.978..2.986 rows=500.00 loops=1)
-        Sort Key: m.sent_at
-        Sort Method: top-N heapsort  Memory: 60kB
-        Buffers: shared hit=3568
-        ->  Nested Loop  (cost=0.30..1657.53 rows=5049 width=20) (actual time=0.048..2.763 rows=5048.00 loops=1)
-              Buffers: shared hit=3565
-              ->  CTE Scan on pending r  (cost=0.00..100.98 rows=5049 width=12) (actual time=0.037..0.517 rows=5076.00 loops=1)
-                    Storage: Memory  Maximum Storage: 263kB
-                    Buffers: shared hit=22
-              ->  Memoize  (cost=0.30..1.67 rows=1 width=16) (actual time=0.000..0.000 rows=0.99 loops=5076)
-                    Cache Key: r.message_id
-                    Cache Mode: logical
-                    Hits: 3895  Misses: 1181  Evictions: 0  Overflows: 0  Memory Usage: 139kB
-                    Buffers: shared hit=3543
-                    ->  Index Scan using messages_pkey on messages m  (cost=0.29..1.66 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=1181)
-                          Index Cond: (message_id = r.message_id)
-                          Filter: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
-                          Rows Removed by Filter: 0
-                          Index Searches: 1181
-                          Buffers: shared hit=3543
+Limit  (cost=1000.73..3054.94 rows=500 width=20) (actual time=5.314..6.221 rows=500.00 loops=1)
+  Buffers: shared hit=35981
+  ->  Gather Merge  (cost=1000.73..21896.13 rows=5086 width=20) (actual time=5.314..6.204 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=35981
+        ->  Nested Loop  (cost=0.70..20309.05 rows=2119 width=20) (actual time=0.065..2.385 rows=255.67 loops=3)
+              Buffers: shared hit=35981
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.42..4380.31 rows=49996 width=16) (actual time=0.016..0.247 rows=5967.00 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=115
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.29..0.31 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=17901)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 17901
+                    Buffers: shared hit=35866
 Planning:
-  Buffers: shared hit=382
-Planning Time: 0.524 ms
-Execution Time: 3.033 ms
+  Buffers: shared hit=417
+Planning Time: 0.558 ms
+Execution Time: 6.252 ms
 === R08 run 5 ===
-Limit  (cost=2073.13..2074.38 rows=500 width=20) (actual time=3.053..3.077 rows=500.00 loops=1)
-  Buffers: shared hit=3568
-  CTE pending
-    ->  Index Only Scan using idx_receipts_undelivered on message_receipts  (cost=0.28..164.02 rows=5049 width=12) (actual time=0.041..0.197 rows=5076.00 loops=1)
-          Heap Fetches: 0
-          Index Searches: 1
-          Buffers: shared hit=22
-  ->  Sort  (cost=1909.11..1921.74 rows=5049 width=20) (actual time=3.053..3.061 rows=500.00 loops=1)
-        Sort Key: m.sent_at
-        Sort Method: top-N heapsort  Memory: 60kB
-        Buffers: shared hit=3568
-        ->  Nested Loop  (cost=0.30..1657.53 rows=5049 width=20) (actual time=0.054..2.826 rows=5048.00 loops=1)
-              Buffers: shared hit=3565
-              ->  CTE Scan on pending r  (cost=0.00..100.98 rows=5049 width=12) (actual time=0.042..0.525 rows=5076.00 loops=1)
-                    Storage: Memory  Maximum Storage: 263kB
-                    Buffers: shared hit=22
-              ->  Memoize  (cost=0.30..1.67 rows=1 width=16) (actual time=0.000..0.000 rows=0.99 loops=5076)
-                    Cache Key: r.message_id
-                    Cache Mode: logical
-                    Hits: 3895  Misses: 1181  Evictions: 0  Overflows: 0  Memory Usage: 139kB
-                    Buffers: shared hit=3543
-                    ->  Index Scan using messages_pkey on messages m  (cost=0.29..1.66 rows=1 width=16) (actual time=0.001..0.001 rows=1.00 loops=1181)
-                          Index Cond: (message_id = r.message_id)
-                          Filter: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
-                          Rows Removed by Filter: 0
-                          Index Searches: 1181
-                          Buffers: shared hit=3543
+Limit  (cost=1000.73..3054.94 rows=500 width=20) (actual time=6.018..6.836 rows=500.00 loops=1)
+  Buffers: shared hit=41744
+  ->  Gather Merge  (cost=1000.73..21896.13 rows=5086 width=20) (actual time=6.018..6.808 rows=500.00 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=41744
+        ->  Nested Loop  (cost=0.70..20309.05 rows=2119 width=20) (actual time=0.069..2.785 rows=290.67 loops=3)
+              Buffers: shared hit=41744
+              ->  Parallel Index Only Scan using idx_messages_sent_at_cover on messages m  (cost=0.42..4380.31 rows=49996 width=16) (actual time=0.020..0.308 rows=6924.67 loops=3)
+                    Index Cond: (sent_at < '2026-06-30 23:00:00+05:30'::timestamp with time zone)
+                    Heap Fetches: 0
+                    Index Searches: 1
+                    Buffers: shared hit=132
+              ->  Index Only Scan using idx_receipts_undelivered on message_receipts r  (cost=0.29..0.31 rows=1 width=12) (actual time=0.000..0.000 rows=0.04 loops=20774)
+                    Index Cond: (message_id = m.message_id)
+                    Heap Fetches: 0
+                    Index Searches: 20774
+                    Buffers: shared hit=41612
 Planning:
-  Buffers: shared hit=382
-Planning Time: 0.493 ms
-Execution Time: 3.110 ms
+  Buffers: shared hit=417
+Planning Time: 0.703 ms
+Execution Time: 6.875 ms

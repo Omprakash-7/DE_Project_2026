@@ -1,75 +1,75 @@
 === R21 run 1 ===
-Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.620..11.620 rows=6.00 loops=1)
+Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.960..11.960 rows=6.00 loops=1)
   Sort Key: (count(*)) DESC
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1371
-  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.610..11.612 rows=6.00 loops=1)
+  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.951..11.953 rows=6.00 loops=1)
         Group Key: message_type
         Batches: 1  Memory Usage: 32kB
         Buffers: shared hit=1368
-        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..2.892 rows=120000.00 loops=1)
+        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..3.122 rows=120000.00 loops=1)
               Buffers: shared hit=1368
 Planning:
   Buffers: shared hit=243
-Planning Time: 0.342 ms
-Execution Time: 11.659 ms
+Planning Time: 0.362 ms
+Execution Time: 11.994 ms
 === R21 run 2 ===
-Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.893..11.893 rows=6.00 loops=1)
+Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=12.267..12.267 rows=6.00 loops=1)
   Sort Key: (count(*)) DESC
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1371
-  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.884..11.886 rows=6.00 loops=1)
+  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=12.258..12.261 rows=6.00 loops=1)
         Group Key: message_type
         Batches: 1  Memory Usage: 32kB
         Buffers: shared hit=1368
-        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..2.931 rows=120000.00 loops=1)
+        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..3.215 rows=120000.00 loops=1)
               Buffers: shared hit=1368
 Planning:
   Buffers: shared hit=243
-Planning Time: 0.324 ms
-Execution Time: 11.926 ms
+Planning Time: 0.339 ms
+Execution Time: 12.301 ms
 === R21 run 3 ===
-Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.591..11.591 rows=6.00 loops=1)
+Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=12.069..12.070 rows=6.00 loops=1)
   Sort Key: (count(*)) DESC
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1371
-  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.582..11.584 rows=6.00 loops=1)
+  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=12.061..12.063 rows=6.00 loops=1)
         Group Key: message_type
         Batches: 1  Memory Usage: 32kB
         Buffers: shared hit=1368
-        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.002..2.871 rows=120000.00 loops=1)
+        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..3.172 rows=120000.00 loops=1)
               Buffers: shared hit=1368
 Planning:
   Buffers: shared hit=243
-Planning Time: 0.310 ms
-Execution Time: 11.623 ms
+Planning Time: 0.322 ms
+Execution Time: 12.107 ms
 === R21 run 4 ===
-Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.584..11.585 rows=6.00 loops=1)
+Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=12.028..12.028 rows=6.00 loops=1)
   Sort Key: (count(*)) DESC
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1371
-  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.576..11.578 rows=6.00 loops=1)
+  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=12.020..12.022 rows=6.00 loops=1)
         Group Key: message_type
         Batches: 1  Memory Usage: 32kB
         Buffers: shared hit=1368
-        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..2.870 rows=120000.00 loops=1)
+        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..3.151 rows=120000.00 loops=1)
               Buffers: shared hit=1368
 Planning:
   Buffers: shared hit=243
-Planning Time: 0.324 ms
-Execution Time: 11.618 ms
+Planning Time: 0.330 ms
+Execution Time: 12.063 ms
 === R21 run 5 ===
-Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=11.533..11.533 rows=6.00 loops=1)
+Sort  (cost=3768.29..3768.30 rows=6 width=77) (actual time=12.140..12.141 rows=6.00 loops=1)
   Sort Key: (count(*)) DESC
   Sort Method: quicksort  Memory: 25kB
   Buffers: shared hit=1371
-  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=11.524..11.526 rows=6.00 loops=1)
+  ->  HashAggregate  (cost=3768.00..3768.21 rows=6 width=77) (actual time=12.132..12.134 rows=6.00 loops=1)
         Group Key: message_type
         Batches: 1  Memory Usage: 32kB
         Buffers: shared hit=1368
-        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.002..2.889 rows=120000.00 loops=1)
+        ->  Seq Scan on messages  (cost=0.00..2568.00 rows=120000 width=14) (actual time=0.003..3.185 rows=120000.00 loops=1)
               Buffers: shared hit=1368
 Planning:
   Buffers: shared hit=243
-Planning Time: 0.334 ms
-Execution Time: 11.568 ms
+Planning Time: 0.335 ms
+Execution Time: 12.174 ms
