@@ -19,8 +19,16 @@ case "$PHASE" in
   baseline|optimized|large) ;;
   *) echo "phase must be baseline, optimized, or large" >&2; exit 2 ;;
 esac
+if [[ ! "$RUNS" =~ ^[1-9][0-9]*$ ]]; then
+  echo "runs must be a positive integer" >&2
+  exit 2
+fi
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKLOAD="${4:-$ROOT/queries/workload_30.sql}"
+if [[ ! -r "$WORKLOAD" ]]; then
+  echo "workload is not readable: $WORKLOAD" >&2
+  exit 2
+fi
 OUT="$ROOT/benchmarks/results/$PHASE"
 SUMMARY="$OUT/summary.csv"
 mkdir -p "$OUT"
