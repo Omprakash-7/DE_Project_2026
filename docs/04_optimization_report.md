@@ -20,7 +20,7 @@
 
 > Note: `Improvement % = (Before - After) / Before × 100`. Negative percentages on fast PK lookups or write queries reflect minor cold-cache variance and expected index-maintenance overhead. Baseline values use three runs; optimized values use five.
 
-| Query | Before (ms) | Problem Found in Baseline Plan | Optimization Applied | After (ms) | Improvement | Same Result? |
+| Query | Before (ms) | Problem Found in Baseline Plan | Optimization Applied | After (ms) | Improvement | Result / change |
 |---|---:|---|---|---:|---:|:---:|
 | **R01** | 18.377 | `chat_members_pkey` scanned 295 pages (`user_id` trailing); 4× `Seq Scan on messages` | `idx_chat_members_user_chat` + `idx_messages_chat_sent` (Index Only Scans) | 0.570 | 96.9% (32.2×) | ✅ |
 | **R02** | 3.506 | `Seq Scan on messages` (120k rows) + sort | `idx_messages_chat_sent` (`chat_id, sent_at DESC`) | 0.665 | 81.0% (5.3×) | ✅ |
@@ -34,7 +34,7 @@
 | **R10** | 7.571 | Non-sargable `sent_at::date` predicate + `Seq Scan on messages` | Rewritten to sargable timestamp range + `idx_messages_sent_at_cover` (Index Only Scan) | 1.672 | 77.9% (4.5×) | ✅ |
 | **R11** | 3.065 | Non-sargable `EXTRACT(YEAR ...)` + `Seq Scan on calls` | Sargable range `started_at >= '2025-01-01+05:30'` + `idx_calls_missed_chat` + `idx_chat_members_user_chat` | 0.163 | 94.7% (18.8×) | ✅ |
 | **R12** | 5.358 | `Seq Scan` on 120k messages to read 5,998 forwarded rows (5%) | Partial index `idx_messages_forwarded (sender_id, sent_at) WHERE is_forwarded = true` | 1.245 | 76.8% (4.3×) | ✅ |
-| **R13** | 19.205 | **Wrong result (0 rows)** due to `NOT IN` NULL trap + 2× `Seq Scan` (120k rows) | Fixed to `NOT EXISTS` + `idx_messages_chat_sent` + partial `idx_messages_reply_to` | 0.555 | 97.1% (34.6×) | Fixed (0→7) ✅ |
+| **R13** | 19.205 | **Wrong result (0 rows)** due to `NOT IN` NULL trap + 2× `Seq Scan` (120k rows) | Fixed to `NOT EXISTS` + `idx_messages_chat_sent` + partial `idx_messages_reply_to` | 0.555 | 97.1% (34.6×) | Intentional correction (0→7 rows); results differ |
 | **R14** | 6.118 | `Seq Scan on messages` + `Seq Scan on chats` (23k rows) | `idx_messages_sent_at_cover` + partial `idx_chats_group` (Index Only Scans) | 2.189 | 64.2% (2.8×) | ✅ |
 | **R15** | 0.025 | Already optimal (`Index Only Scan using blocked_users_pkey`) | No change | 0.051 | -104.0% (0.5×) | ✅ |
 | **R16** | 0.061 | Already optimal (`message_receipts_pkey` leading `message_id` + `users_pkey`) | No change | 0.330 | -441.0% (0.2×) | ✅ |
