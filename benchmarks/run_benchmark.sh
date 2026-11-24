@@ -36,6 +36,9 @@ echo "query_id,type,avg_ms,median_ms,min_ms,max_ms,scan_nodes" > "$SUMMARY"
 
 # Split the workload file on "-- @ID" markers into one temp file per query
 TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 awk -v dir="$TMP" '
   /^-- @/ { id = ""; if ($2 ~ /^@[RW][0-9]+$/) { id = substr($2, 2); file = dir "/" id ".sql"; printf "" > file }; next }
   id != "" && !/^--/ { print >> file }
@@ -73,6 +76,5 @@ for f in $(ls "$TMP"/*.sql | sort -V); do
   echo "$id,$type,$avg,$median,${sorted[0]},${sorted[$((RUNS - 1))]},$node" >> "$SUMMARY"
   printf '%-4s %-5s avg %9s ms   %s\n' "$id" "$type" "$avg" "$node"
 done
-rm -rf "$TMP"
 echo "Workload: $WORKLOAD"
 echo "Saved raw plans and summary to $OUT"
